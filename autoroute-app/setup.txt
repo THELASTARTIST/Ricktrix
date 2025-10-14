@@ -1,0 +1,160 @@
+# AutoRoute - Auto-Rickshaw Route Finder
+
+A simple, standalone web application to find shared auto-rickshaw routes in Kolkata.
+
+## 📁 File Structure
+
+```
+autoroute/
+├── index.html       (Main HTML file)
+├── styles.css       (CSS styling)
+├── data.js          (Route data)
+└── app.js           (JavaScript functionality)
+```
+
+## 🚀 Setup Instructions
+
+### Method 1: Simple Setup (Recommended)
+
+1. **Create a new folder** on your computer called `autoroute`
+
+2. **Create 4 files** inside the folder:
+   - `index.html`
+   - `styles.css`
+   - `data.js`
+   - `app.js`
+
+3. **Copy the code** from each artifact into the corresponding files
+
+4. **Open `index.html`** in your web browser (double-click the file)
+
+That's it! ✅ The app will run directly in your browser.
+
+---
+
+### Method 2: Using VS Code
+
+1. **Open VS Code**
+
+2. **Create a new folder**: File → Open Folder → Create new folder called `autoroute`
+
+3. **Create 4 files**:
+   - Right-click in Explorer → New File
+   - Create: `index.html`, `styles.css`, `data.js`, `app.js`
+
+4. **Copy the code** into each file:
+   - Copy from the artifacts I created above
+   - Paste into the corresponding files in VS Code
+
+5. **Run the app**:
+   - Right-click on `index.html`
+   - Select "Open with Live Server" (if you have Live Server extension)
+   - OR simply double-click `index.html` in File Explorer
+
+---
+
+## 📋 What Each File Does
+
+| File | Purpose |
+|------|---------|
+| `index.html` | Main structure and layout of the app |
+| `styles.css` | Custom styling and animations |
+| `data.js` | Route data and popular stops |
+| `app.js` | Interactive functionality (search, toggle, etc.) |
+
+---
+
+## ✨ Features
+
+- ✅ **Search Routes**: Find routes from any location to another
+- ✅ **Popular Stops**: Quick access to common stops
+- ✅ **Route Details**: Click any route to see more info
+- ✅ **Mobile Responsive**: Works on all devices
+- ✅ **No Installation**: Just HTML, CSS, and JavaScript
+- ✅ **No Dependencies**: Works offline once loaded
+
+---
+
+## 🎯 How to Use
+
+1. **Search for Routes**:
+   - Enter "From" location (e.g., Howrah Station)
+   - Enter "To" location (e.g., Garia)
+   - Click "Find Routes"
+
+2. **Browse All Routes**:
+   - Scroll down to see all available routes
+   - Click on any route card to expand details
+
+3. **Quick Search**:
+   - Click on popular stops to auto-fill search
+
+---
+
+## 🔧 Customization
+
+### Add More Routes
+
+Edit `data.js` and add new route objects:
+
+```javascript
+{
+    id: 10,
+    name: 'Your Route Name',
+    from: 'Start Location',
+    to: 'End Location',
+    fare: '10-15',
+    time: '20-30',
+    distance: '8.5',
+    type: 'Shared',
+    stops: 7,
+    frequency: 'Every 5 min',
+    rating: 4.5,
+    users: 200
+}
+```
+
+### Change Colors
+
+Edit `styles.css` or modify Tailwind classes in `index.html`
+
+---
+
+## 🌐 Browser Compatibility
+
+Works on:
+- ✅ Chrome
+- ✅ Firefox
+- ✅ Safari
+- ✅ Edge
+- ✅ Mobile browsers
+
+---
+
+## 📝 Notes
+
+- **No server required**: Pure client-side application
+- **No build process**: No npm, webpack, or compilation needed
+- **Tailwind CDN**: Uses Tailwind CSS from CDN (requires internet for first load)
+- **Lightweight**: Fast loading and minimal file size
+
+---
+
+## 🚀 Next Steps
+
+To add more features:
+1. Integrate a real map (Google Maps API or Mapbox)
+2. Add route submission form
+3. Connect to a backend database
+4. Add user authentication
+5. Implement GPS tracking
+
+---
+
+## 📧 Support
+
+For issues or questions, check the code comments in each file.
+
+---
+
+**Made with ❤️ for Kolkata commuters**
