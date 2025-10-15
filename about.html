@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - AutoRoute</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
+    
+    <!-- Header -->
+    <header class="bg-white dark:bg-gray-800 shadow-sm sticky top-0 z-50 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <a href="index.html" class="flex items-center gap-2">
+                    <div class="relative w-10 h-10">
+                        <div class="absolute inset-0 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl transform rotate-12"></div>
+                        <div class="absolute inset-0 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center">
+                            <svg viewBox="0 0 24 24" class="w-6 h-6 text-white" fill="currentColor">
+                                <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-xl font-bold bg-gradient-to-r from-amber-500 to-orange-600 bg-clip-text text-transparent">AutoRoute</span>
+                        <span class="text-xs text-gray-500 dark:text-gray-400 -mt-1">Smart Travel</span>
+                    </div>
+                </a>
+                
+                <div class="flex items-center gap-4">
+                    <a href="index.html" class="text-gray-600 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-500 transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                        </svg>
+                    </a>
+                    <button id="darkModeToggle" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                        <svg id="sunIcon" class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        </svg>
+                        <svg id="moonIcon" class="w-5 h-5 text-orange-500 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <div class="bg-gradient-to-r from-amber-500 to-orange-600 text-white">
+        <div class="max-w-7xl mx-auto px-4 py-16 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">About AutoRoute</h1>
+            <p class="text-xl text-amber-50 max-w-3xl mx-auto">Revolutionizing auto-rickshaw travel with smart route finding and community-driven data</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 py-12">
+        
+        <!-- Our Story -->
+        <div class="mb-16">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 md:p-12">
+                <h2 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6">Our Story</h2>
+                <div class="prose dark:prose-invert max-w-none">
+                    <p class="text-lg text-gray-700 dark:text-gray-300 mb-4">
+                        AutoRoute was born from a simple frustration: finding shared auto-rickshaw routes in Kolkata was always a challenge. 
+                        Whether you're a daily commuter or a visitor, knowing which auto goes where, how much it costs, and how long it takes 
+                        shouldn't be a guessing game.
+                    </p>
+                    <p class="text-lg text-gray-700 dark:text-gray-300">
+                        We built AutoRoute to solve this problem. By combining technology with community knowledge, we've created a platform 
+                        that makes auto travel predictable, affordable, and accessible for everyone.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Why Use AutoRoute -->
+        <div class="mb-16">
+            <h2 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-8 text-center">Why Use AutoRoute?</h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Feature 1 -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
+                    <div class="w-14 h-14 bg-orange-100 dark:bg-orange-900 rounded-xl flex items-center justify-center mb-4">
+                        <svg class="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-3">Lightning Fast</h3>
+                    <p class="text-gray-600 dark:text-gray-400">Find your route in seconds. No more asking around or waiting at wrong stops.</p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
+                    <div class="w-14 h-14 bg-orange-100 dark:bg-orange-900 rounded-xl flex items-center justify-center mb-4">
+                        <svg class="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-3">Know the Fare</h3>
+                    <p class="text-gray-600 dark:text-gray-400">See exact fare ranges before you board. No surprises, no arguments.</p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
+                    <div class="w-14 h-14 bg-orange-100 dark:bg-orange-900 rounded-xl flex items-center justify-center mb-4">
+                        <svg class="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-3">Community Driven</h3>
+                    <p class="text-gray-600 dark:text-gray-400">Real data from real commuters. Updated by the community, for the community.</p>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
+                    <div class="w-14 h-14 bg-orange-100 dark:bg-orange-900 rounded-xl flex items-center justify-center mb-4">
+                        <svg class="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-3">Mobile First</h3>
+                    <p class="text-gray-600 dark:text-gray-400">Designed for your phone. Works anywhere, anytime, even on slow connections.</p>
+                </div>
+
+                <!-- Feature 5 -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
+                    <div class="w-14 h-14 bg-orange-100 dark:bg-orange-900 rounded-xl flex items-center justify-center mb-4">
+                        <svg class="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-3">Multi-Language</h3>
+                    <p class="text-gray-600 dark:text-gray-400">Available in English, Bengali, and Hindi. Use it in your preferred language.</p>
+                </div>
+
+                <!-- Feature 6 -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow">
+                    <div class="w-14 h-14 bg-orange-100 dark:bg-orange-900 rounded-xl flex items-center justify-center mb-4">
+                        <svg class="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-3">100% Free</h3>
+                    <p class="text-gray-600 dark:text-gray-400">No subscriptions, no hidden fees. Just free access to route information.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comparison Chart -->
+        <div class="mb-16">
+            <h2 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-8 text-center">AutoRoute vs Traditional Methods</h2>
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8">
+                <canvas id="comparisonChart" class="max-w-4xl mx-auto"></canvas>
+            </div>
+        </div>
+
+        <!-- Usage Statistics -->
+        <div class="mb-16">
+            <h2 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-8 text-center">Our Impact</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Time Saved Chart -->
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+                    <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-4 text-center">Average Time Saved per Journey</h3>
+                    <canvas id="timeSavedChart"></canvas>
+                </div>
+
+                <!-- User Satisfaction Chart -->
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+                    <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-4 text-center">User Satisfaction Rate</h3>
+                    <canvas id="satisfactionChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Features Details -->
+        <div class="mb-16">
+            <h2 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-8 text-center">Key Features in Detail</h2>
+            <div class="space-y-6">
+                <!-- Feature Detail 1 -->
+                <div class="bg-gradient-to-r from-orange-50 to-amber-50 dark:from-gray-800 dark:to-gray-700 rounded-xl p-6 border-l-4 border-orange-500">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2">Smart Search</h3>
+                            <p class="text-gray-700 dark:text-gray-300">Our intelligent search algorithm understands variations in location names and suggests routes even with partial matches. Just type a few letters and we'll find your route.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature Detail 2 -->
+                <div class="bg-gradient-to-r from-orange-50 to-amber-50 dark:from-gray-800 dark:to-gray-700 rounded-xl p-6 border-l-4 border-orange-500">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2">Detailed Route Information</h3>
+                            <p class="text-gray-700 dark:text-gray-300">Every route includes fare ranges, estimated time, distance, number of stops, and frequency. Know exactly what to expect before you travel.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature Detail 3 -->
+                <div class="bg-gradient-to-r from-orange-50 to-amber-50 dark:from-gray-800 dark:to-gray-700 rounded-xl p-6 border-l-4 border-orange-500">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2">Community Ratings</h3>
+                            <p class="text-gray-700 dark:text-gray-300">See what other commuters think about each route. High ratings mean reliable service and popular routes.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature Detail 4 -->
+                <div class="bg-gradient-to-r from-orange-50 to-amber-50 dark:from-gray-800 dark:to-gray-700 rounded-xl p-6 border-l-4 border-orange-500">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2">Dark Mode</h3>
+                            <p class="text-gray-700 dark:text-gray-300">Easy on the eyes, day or night. Our dark mode saves battery and reduces eye strain during night travel.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA Section -->
+        <div class="bg-gradient-to-r from-amber-500 to-orange-600 rounded-2xl p-12 text-center text-white">
+            <h2 class="text-3xl font-bold mb-4">Ready to Make Your Commute Easier?</h2>
+            <p class="text-xl text-amber-50 mb-8 max-w-2xl mx-auto">Join thousands of commuters who trust AutoRoute for their daily travels</p>
+            <a href="index.html" class="inline-block bg-white text-orange-600 px-10 py-4 rounded-xl font-bold text-lg hover:shadow-2xl transition-all hover:scale-105">
+                Start Finding Routes
+            </a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-400 mt-16">
+        <div class="max-w-7xl mx-auto px-4 py-8 text-center">
+            <div class="flex items-center justify-center gap-2 mb-4">
+                <div class="relative w-10 h-10">
+                    <div class="absolute inset-0 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl transform rotate-12"></div>
+                    <div class="absolute inset-0 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center">
+                        <svg viewBox="0 0 24 24" class="w-6 h-6 text-white" fill="currentColor">
+                            <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-xl font-bold bg-gradient-to-r from-amber-500 to-orange-600 bg-clip-text text-transparent">AutoRoute</span>
+                    <span class="text-xs text-gray-500 -mt-1">Smart Travel</span>
+                </div>
+            </div>
+            <p class="mt-4 text-sm">Making auto travel easier, one route at a time.</p>
+            <div class="mt-4 text-xs">© 2025 AutoRoute. Built with ❤️ for commuters.</div>
+        </div>
+    </footer>
+
+    <script>
+        // Dark Mode Toggle
+        let darkMode = localStorage.getItem('autoroute-darkmode') === 'true';
+        
+        function initDarkMode() {
+            if (darkMode) {
+                document.documentElement.classList.add('dark');
+                document.getElementById('sunIcon').classList.add('hidden');
+                document.getElementById('moonIcon').classList.remove('hidden');
+            } else {
+                document.documentElement.classList.remove('dark');
+                document.getElementById('sunIcon').classList.remove('hidden');
+                document.getElementById('moonIcon').classList.add('hidden');
+            }
+        }
+        
+        document.getElementById('darkModeToggle').addEventListener('click', () => {
+            darkMode = !darkMode;
+            localStorage.setItem('autoroute-darkmode', darkMode);
+            initDarkMode();
+            updateChartColors();
+        });
+
+        // Initialize dark mode on page load
+        initDarkMode();
+
+        // Chart colors based on theme
+        function getChartColors() {
+            return darkMode ? {
+                text: '#e5e7eb',
+                grid: '#374151',
+                primary: '#f59e0b',
+                secondary: '#ea580c',
+                background: 'rgba(249, 115, 22, 0.1)'
+            } : {
+                text: '#374151',
+                grid: '#e5e7eb',
+                primary: '#f59e0b',
+                secondary: '#ea580c',
+                background: 'rgba(249, 115, 22, 0.1)'
+            };
+        }
+
+        let comparisonChart, timeSavedChart, satisfactionChart;
+
+        // Comparison Chart
+        function createComparisonChart() {
+            const colors = getChartColors();
+            const ctx = document.getElementById('comparisonChart').getContext('2d');
+            
+            if (comparisonChart) comparisonChart.destroy();
+            
+            comparisonChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Time to Find Route', 'Fare Transparency', 'Convenience', 'Accuracy', 'Accessibility'],
+                    datasets: [{
+                        label: 'Traditional Method',
+                        data: [8, 3, 4, 5, 3],
+                        backgroundColor: 'rgba(156, 163, 175, 0.7)',
+                        borderColor: 'rgba(156, 163, 175, 1)',
+                        borderWidth: 2
+                    }, {
+                        label: 'AutoRoute',
+                        data: [9.5, 9, 9.5, 9, 10],
+                        backgroundColor: colors.background,
+                        borderColor: colors.primary,
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 10,
+                            ticks: { color: colors.text },
+                            grid: { color: colors.grid }
+                        },
+                        x: {
+                            ticks: { color: colors.text },
+                            grid: { color: colors.grid }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: { color: colors.text }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Time Saved Chart
+        function createTimeSavedChart() {
+            const colors = getChartColors();
+            const ctx = document.getElementById('timeSavedChart').getContext('2d');
+            
+            if (timeSavedChart) timeSavedChart.destroy();
+            
+            timeSavedChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Time Saved', 'Journey Time'],
+                    datasets: [{
+                        data: [15, 35],
+                        backgroundColor: [colors.primary, colors.grid],
+                        borderColor: darkMode ? '#1f2937' : '#ffffff',
+                        borderWidth: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            labels: { 
+                                color: colors.text,
+                                font: { size: 14 }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.label + ': ' + context.parsed + ' minutes';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // User Satisfaction Chart
+        function createSatisfactionChart() {
+            const colors = getChartColors();
+            const ctx = document.getElementById('satisfactionChart').getContext('2d');
+            
+            if (satisfactionChart) satisfactionChart.destroy();
+            
+            satisfactionChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Very Satisfied', 'Satisfied', 'Neutral', 'Unsatisfied'],
+                    datasets: [{
+                        data: [65, 28, 5, 2],
+                        backgroundColor: [
+                            'rgba(34, 197, 94, 0.8)',
+                            'rgba(59, 130, 246, 0.8)',
+                            'rgba(250, 204, 21, 0.8)',
+                            'rgba(239, 68, 68, 0.8)'
+                        ],
+                        borderColor: darkMode ? '#1f2937' : '#ffffff',
+                        borderWidth: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            labels: { 
+                                color: colors.text,
+                                font: { size: 14 }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.label + ': ' + context.parsed + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update all charts
+        function updateChartColors() {
+            createComparisonChart();
+            createTimeSavedChart();
+            createSatisfactionChart();
+        }
+
+        // Initialize charts
+        document.addEventListener('DOMContentLoaded', () => {
+            createComparisonChart();
+            createTimeSavedChart();
+            createSatisfactionChart();
+        });
+    </script>
+</body>
+</html>

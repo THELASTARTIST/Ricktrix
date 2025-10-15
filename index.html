@@ -5,12 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AutoRoute - Smart Auto-Rickshaw Route Finder</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="styles.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+<body class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
     
     <!-- Header -->
-    <header class="bg-white shadow-sm sticky top-0 z-50">
+    <header class="bg-white dark:bg-gray-800 shadow-sm sticky top-0 z-50 transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 py-4">
             <div class="flex items-center justify-between">
                 <!-- Logo -->
@@ -25,15 +30,15 @@
                     </div>
                     <div class="flex flex-col">
                         <span class="text-xl font-bold bg-gradient-to-r from-amber-500 to-orange-600 bg-clip-text text-transparent">AutoRoute</span>
-                        <span class="text-xs text-gray-500 -mt-1">Smart Travel</span>
+                        <span class="text-xs text-gray-500 dark:text-gray-400 -mt-1">Smart Travel</span>
                     </div>
                 </div>
                 
-                <button id="menuBtn" class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                    <svg id="menuIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button id="menuBtn" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                    <svg id="menuIcon" class="w-6 h-6 text-gray-800 dark:text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
-                    <svg id="closeIcon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg id="closeIcon" class="w-6 h-6 text-gray-800 dark:text-gray-200 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
                 </button>
@@ -42,45 +47,83 @@
     </header>
 
     <!-- Mobile Menu -->
-    <div id="mobileMenu" class="fixed inset-0 bg-white z-40 pt-20 px-4 hidden">
+    <div id="mobileMenu" class="fixed inset-0 bg-white dark:bg-gray-900 z-40 pt-20 px-4 hidden transition-colors duration-300">
         <nav class="space-y-4">
-            <a href="#" class="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-lg">
+            <a href="#routes" onclick="closeMenu()" class="flex items-center gap-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors">
                 <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                 </svg>
-                <span class="font-medium">Popular Routes</span>
+                <span class="font-medium dark:text-gray-200" id="menu-popular">Popular Routes</span>
             </a>
-            <a href="#" class="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-lg">
+            <a href="#" class="flex items-center gap-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors">
                 <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
                 </svg>
-                <span class="font-medium">Saved Routes</span>
+                <span class="font-medium dark:text-gray-200" id="menu-saved">Saved Routes</span>
             </a>
-            <a href="#" class="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-lg">
+            <a href="#" class="flex items-center gap-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors">
                 <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
                 </svg>
-                <span class="font-medium">Community</span>
+                <span class="font-medium dark:text-gray-200" id="menu-community">Community</span>
             </a>
+            <a href="about.html" class="flex items-center gap-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors">
+                <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span class="font-medium dark:text-gray-200" id="menu-about">About Us</span>
+            </a>
+            
+            <!-- Language Selector -->
+            <div class="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
+                <div class="flex items-center gap-3 p-3">
+                    <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path>
+                    </svg>
+                    <span class="font-medium dark:text-gray-200" id="menu-language">Language</span>
+                </div>
+                <div class="ml-8 space-y-2">
+                    <button onclick="changeLanguage('en')" class="block w-full text-left px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg text-gray-700 dark:text-gray-300 transition-colors">
+                        English
+                    </button>
+                    <button onclick="changeLanguage('bn')" class="block w-full text-left px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg text-gray-700 dark:text-gray-300 transition-colors">
+                        বাংলা (Bengali)
+                    </button>
+                    <button onclick="changeLanguage('hi')" class="block w-full text-left px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg text-gray-700 dark:text-gray-300 transition-colors">
+                        हिंदी (Hindi)
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Dark Mode Toggle -->
+            <button id="darkModeToggle" class="flex items-center gap-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg w-full transition-colors">
+                <svg id="sunIcon" class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                </svg>
+                <svg id="moonIcon" class="w-5 h-5 text-orange-500 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                </svg>
+                <span class="font-medium dark:text-gray-200" id="menu-theme">Dark Mode</span>
+            </button>
         </nav>
     </div>
 
     <!-- Hero Section -->
     <div class="bg-gradient-to-r from-amber-500 to-orange-600 text-white">
         <div class="max-w-7xl mx-auto px-4 py-12">
-            <h1 class="text-3xl md:text-4xl font-bold mb-3">Find Your Auto Route</h1>
-            <p class="text-amber-50 text-lg mb-8">Discover shared auto routes across the city in seconds</p>
+            <h1 id="heroTitle" class="text-3xl md:text-4xl font-bold mb-3">Find Your Auto Route</h1>
+            <p id="heroSubtitle" class="text-amber-50 text-lg mb-8">Discover shared auto routes across the city in seconds</p>
 
             <!-- Search Box -->
-            <div class="bg-white rounded-2xl shadow-xl p-4 md:p-6 max-w-2xl">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-4 md:p-6 max-w-2xl transition-colors duration-300">
                 <div class="space-y-4">
                     <div class="relative">
                         <svg class="absolute left-3 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
                         </svg>
                         <input type="text" id="fromLocation" placeholder="From (e.g., Howrah Station)" 
-                            class="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:outline-none text-gray-800 placeholder-gray-400">
+                            class="w-full pl-11 pr-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:border-orange-500 focus:outline-none text-gray-800 dark:text-gray-200 dark:bg-gray-700 placeholder-gray-400 transition-colors duration-300">
                     </div>
                     
                     <div class="relative">
@@ -88,14 +131,14 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
                         </svg>
                         <input type="text" id="toLocation" placeholder="To (e.g., Salt Lake)" 
-                            class="w-full pl-11 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-orange-500 focus:outline-none text-gray-800 placeholder-gray-400">
+                            class="w-full pl-11 pr-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:border-orange-500 focus:outline-none text-gray-800 dark:text-gray-200 dark:bg-gray-700 placeholder-gray-400 transition-colors duration-300">
                     </div>
 
                     <button id="searchBtn" class="w-full bg-gradient-to-r from-amber-500 to-orange-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all flex items-center justify-center gap-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
-                        Find Routes
+                        <span id="searchBtnText">Find Routes</span>
                     </button>
                 </div>
             </div>
@@ -103,20 +146,20 @@
     </div>
 
     <!-- Stats Bar -->
-    <div class="bg-white border-b">
+    <div class="bg-white dark:bg-gray-800 border-b dark:border-gray-700 transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 py-6">
             <div class="grid grid-cols-3 gap-4 text-center">
                 <div>
                     <div class="text-2xl font-bold text-orange-600">450+</div>
-                    <div class="text-sm text-gray-600">Routes</div>
+                    <div id="stat1" class="text-sm text-gray-600 dark:text-gray-400">Routes</div>
                 </div>
                 <div>
                     <div class="text-2xl font-bold text-orange-600">28k+</div>
-                    <div class="text-sm text-gray-600">Users</div>
+                    <div id="stat2" class="text-sm text-gray-600 dark:text-gray-400">Users</div>
                 </div>
                 <div>
                     <div class="text-2xl font-bold text-orange-600">12</div>
-                    <div class="text-sm text-gray-600">Areas</div>
+                    <div id="stat3" class="text-sm text-gray-600 dark:text-gray-400">Areas</div>
                 </div>
             </div>
         </div>
@@ -126,26 +169,26 @@
     <div class="max-w-7xl mx-auto px-4 py-8">
         <!-- Popular Stops -->
         <div class="mb-8">
-            <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <h2 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-4 flex items-center gap-2">
                 <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
                 </svg>
-                Popular Stops
+                <span id="popularStopsTitle">Popular Stops</span>
             </h2>
             <div id="popularStops" class="grid grid-cols-2 md:grid-cols-4 gap-3"></div>
         </div>
 
         <!-- Available Routes -->
-        <div>
-            <h2 class="text-xl font-bold text-gray-800 mb-4">Available Routes</h2>
+        <div id="routes">
+            <h2 id="availableRoutesTitle" class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-4">Available Routes</h2>
             <div id="routesList" class="space-y-4"></div>
         </div>
 
         <!-- CTA Section -->
         <div class="mt-12 bg-gradient-to-r from-amber-500 to-orange-600 rounded-2xl p-8 text-center text-white">
-            <h2 class="text-2xl font-bold mb-3">Help Build the Community</h2>
-            <p class="mb-6 text-amber-50">Know a route that's not listed? Submit it and help others!</p>
-            <button class="bg-white text-orange-600 px-8 py-3 rounded-xl font-semibold hover:shadow-lg transition-all">
+            <h2 id="ctaTitle" class="text-2xl font-bold mb-3">Help Build the Community</h2>
+            <p id="ctaSubtitle" class="mb-6 text-amber-50">Know a route that's not listed? Submit it and help others!</p>
+            <button id="ctaButton" class="bg-white text-orange-600 px-8 py-3 rounded-xl font-semibold hover:shadow-lg transition-all">
                 Submit a Route
             </button>
         </div>
@@ -168,11 +211,13 @@
                     <span class="text-xs text-gray-500 -mt-1">Smart Travel</span>
                 </div>
             </div>
-            <p class="mt-4 text-sm">Making auto travel easier, one route at a time.</p>
-            <div class="mt-4 text-xs">© 2025 AutoRoute. Built with ❤️ for commuters.</div>
-        </footer>
+            <p id="footerText" class="mt-4 text-sm">Making auto travel easier, one route at a time.</p>
+            <div id="copyright" class="mt-4 text-xs">© 2025 AutoRoute. Built with ❤️ for commuters.</div>
+        </div>
     </footer>
 
+    <!-- Load scripts in correct order -->
+    <script src="translations.js"></script>
     <script src="data.js"></script>
     <script src="app.js"></script>
 </body>

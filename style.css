@@ -40,6 +40,15 @@ button, a, .route-card {
     background: #d97706;
 }
 
+/* Dark mode scrollbar */
+.dark ::-webkit-scrollbar-track {
+    background: #1f2937;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+    background: #f59e0b;
+}
+
 /* Animation for menu */
 @keyframes slideIn {
     from {
@@ -86,8 +95,13 @@ input:focus, button:focus {
     }
 }
 
-/* Loading state (optional) */
+/* Loading state */
 .loading {
     opacity: 0.5;
     pointer-events: none;
+}
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
 }
