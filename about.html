@@ -157,23 +157,190 @@
 
         <!-- Comparison Chart -->
         <div class="mb-16">
-            <h2 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-8 text-center">AutoRoute vs Traditional Methods</h2>
+            <h2 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-8 text-center">Quick Comparison Overview</h2>
             <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8">
                 <canvas id="comparisonChart" class="max-w-4xl mx-auto"></canvas>
             </div>
         </div>
 
-        <!-- Usage Statistics -->
+        <!-- Detailed Comparison -->
         <div class="mb-16">
-            <h2 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-8 text-center">Our Impact</h2>
-            <div class="grid md:grid-cols-2 gap-8">
-                <!-- Time Saved Chart -->
-                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
-                    <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-4 text-center">Average Time Saved per Journey</h3>
-                    <canvas id="timeSavedChart"></canvas>
+            <h2 class="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-8 text-center">Complete Feature Comparison</h2>
+            
+            <!-- Comparison Cards -->
+            <div class="grid md:grid-cols-3 gap-6 mb-8">
+                <!-- AutoRoute Card -->
+                <div class="bg-gradient-to-br from-orange-50 to-amber-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl shadow-xl p-6 border-4 border-orange-500">
+                    <div class="text-center mb-6">
+                        <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">AutoRoute</h3>
+                        <div class="inline-block bg-orange-500 text-white px-6 py-3 rounded-xl text-3xl font-bold shadow-lg">
+                            95/100
+                        </div>
+                    </div>
+                    <ul class="space-y-3">
+                        <li class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                            </svg>
+                            <span class="text-gray-700 dark:text-gray-300">Specialized Auto-Rickshaw Routes</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                            </svg>
+                            <span class="text-gray-700 dark:text-gray-300">Detailed Fare Information</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                            </svg>
+                            <span class="text-gray-700 dark:text-gray-300">Community-Driven Data</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                            </svg>
+                            <span class="text-gray-700 dark:text-gray-300">Real-time Route Updates</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                            </svg>
+                            <span class="text-gray-700 dark:text-gray-300">Multi-language Support</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                            </svg>
+                            <span class="text-gray-700 dark:text-gray-300">No Booking Required</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                            </svg>
+                            <span class="text-gray-700 dark:text-gray-300 font-bold">100% Free Forever</span>
+                        </li>
+                    </ul>
                 </div>
 
-                <!-- User Satisfaction Chart -->
+                <!-- Traditional Method Card -->
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border-2 border-gray-300 dark:border-gray-600">
+                    <div class="text-center mb-6">
+                        <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">Traditional (Asking)</h3>
+                        <div class="inline-block bg-gray-500 text-white px-6 py-3 rounded-xl text-3xl font-bold">
+                            40/100
+                        </div>
+                    </div>
+                    <ul class="space-y-3">
+                        <li class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-orange-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                            </svg>
+                            <span class="text-gray-600 dark:text-gray-400">Limited Route Knowledge</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-orange-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                            </svg>
+                            <span class="text-gray-600 dark:text-gray-400">Unreliable Fare Estimates</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-orange-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                            </svg>
+                            <span class="text-gray-600 dark:text-gray-400">Time-consuming Search</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-orange-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                            </svg>
+                            <span class="text-gray-600 dark:text-gray-400">No Real-time Information</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-orange-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                            </svg>
+                            <span class="text-gray-600 dark:text-gray-400">Language Barriers</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                            </svg>
+                            <span class="text-gray-700 dark:text-gray-300">No Cost</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-orange-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                            </svg>
+                            <span class="text-gray-600 dark:text-gray-400">Inconsistent Information</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Ride-booking Apps Card -->
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border-2 border-gray-300 dark:border-gray-600">
+                    <div class="text-center mb-6">
+                        <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">Ola/Uber/Indrive</h3>
+                        <div class="inline-block bg-red-500 text-white px-6 py-3 rounded-xl text-3xl font-bold">
+                            15/100
+                        </div>
+                    </div>
+                    <ul class="space-y-3">
+                        <li class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                            </svg>
+                            <span class="text-gray-600 dark:text-gray-400"><strong>No Auto Routes</strong></span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                            </svg>
+                            <span class="text-gray-600 dark:text-gray-400"><strong>No Shared Auto Info</strong></span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                            </svg>
+                            <span class="text-gray-600 dark:text-gray-400">Private Cabs Only</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                            </svg>
+                            <span class="text-gray-600 dark:text-gray-400">Wrong Vehicle Type</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                            </svg>
+                            <span class="text-gray-600 dark:text-gray-400">Higher Cost</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                            </svg>
+                            <span class="text-gray-600 dark:text-gray-400">Requires Booking</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <svg class="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                            </svg>
+                            <span class="text-gray-600 dark:text-gray-400">Waiting Time Required</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Bar Chart -->
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+                    <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-4 text-center">Performance Comparison</h3>
+                    <canvas id="detailedComparisonChart"></canvas>
+                </div>
+
+                <!-- User Satisfaction Pie Chart -->
                 <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
                     <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-4 text-center">User Satisfaction Rate</h3>
                     <canvas id="satisfactionChart"></canvas>
@@ -322,9 +489,9 @@
             };
         }
 
-        let comparisonChart, timeSavedChart, satisfactionChart;
+        let comparisonChart, detailedComparisonChart, satisfactionChart;
 
-        // Comparison Chart
+        // Quick Comparison Chart
         function createComparisonChart() {
             const colors = getChartColors();
             const ctx = document.getElementById('comparisonChart').getContext('2d');
@@ -334,16 +501,22 @@
             comparisonChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['Time to Find Route', 'Fare Transparency', 'Convenience', 'Accuracy', 'Accessibility'],
+                    labels: ['Route Info', 'Fare Details', 'Shared Auto Focus', 'Accuracy', 'No Booking Needed'],
                     datasets: [{
-                        label: 'Traditional Method',
-                        data: [8, 3, 4, 5, 3],
+                        label: 'Traditional Method (Asking)',
+                        data: [3, 2, 4, 5, 10],
                         backgroundColor: 'rgba(156, 163, 175, 0.7)',
                         borderColor: 'rgba(156, 163, 175, 1)',
                         borderWidth: 2
                     }, {
+                        label: 'Ola/Uber/Indrive',
+                        data: [1, 0, 0, 2, 0],
+                        backgroundColor: 'rgba(239, 68, 68, 0.7)',
+                        borderColor: 'rgba(239, 68, 68, 1)',
+                        borderWidth: 2
+                    }, {
                         label: 'AutoRoute',
-                        data: [9.5, 9, 9.5, 9, 10],
+                        data: [10, 9, 10, 9.5, 10],
                         backgroundColor: colors.background,
                         borderColor: colors.primary,
                         borderWidth: 2
@@ -359,50 +532,104 @@
                             grid: { color: colors.grid }
                         },
                         x: {
-                            ticks: { color: colors.text },
+                            ticks: { 
+                                color: colors.text,
+                                font: { size: 11 }
+                            },
                             grid: { color: colors.grid }
                         }
                     },
                     plugins: {
                         legend: {
-                            labels: { color: colors.text }
+                            labels: { 
+                                color: colors.text,
+                                font: { size: 13 }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                afterLabel: function(context) {
+                                    const explanations = {
+                                        'Route Info': ['Limited info', 'No auto routes', 'Complete details'],
+                                        'Fare Details': ['Unreliable', 'N/A for autos', 'Exact ranges'],
+                                        'Shared Auto Focus': ['Basic knowledge', 'Private cabs only', 'Specialized'],
+                                        'Accuracy': ['Depends on person', 'Wrong vehicle type', 'Community verified'],
+                                        'No Booking Needed': ['Direct travel', 'Requires booking', 'Direct travel']
+                                    };
+                                    return explanations[context.label][context.datasetIndex];
+                                }
+                            }
                         }
                     }
                 }
             });
         }
 
-        // Time Saved Chart
-        function createTimeSavedChart() {
+        // Detailed Performance Comparison Chart
+        function createDetailedComparisonChart() {
             const colors = getChartColors();
-            const ctx = document.getElementById('timeSavedChart').getContext('2d');
+            const ctx = document.getElementById('detailedComparisonChart').getContext('2d');
             
-            if (timeSavedChart) timeSavedChart.destroy();
+            if (detailedComparisonChart) detailedComparisonChart.destroy();
             
-            timeSavedChart = new Chart(ctx, {
-                type: 'doughnut',
+            detailedComparisonChart = new Chart(ctx, {
+                type: 'bar',
                 data: {
-                    labels: ['Time Saved', 'Journey Time'],
+                    labels: ['Route Coverage', 'Data Accuracy', 'User Experience', 'Cost Efficiency', 'Accessibility', 'Speed', 'Reliability'],
                     datasets: [{
-                        data: [15, 35],
-                        backgroundColor: [colors.primary, colors.grid],
-                        borderColor: darkMode ? '#1f2937' : '#ffffff',
-                        borderWidth: 3
+                        label: 'Traditional',
+                        data: [4, 5, 3, 10, 6, 2, 4],
+                        backgroundColor: 'rgba(156, 163, 175, 0.8)',
+                        borderColor: 'rgba(156, 163, 175, 1)',
+                        borderWidth: 2
+                    }, {
+                        label: 'Ride Apps',
+                        data: [1, 2, 7, 2, 5, 8, 3],
+                        backgroundColor: 'rgba(239, 68, 68, 0.8)',
+                        borderColor: 'rgba(239, 68, 68, 1)',
+                        borderWidth: 2
+                    }, {
+                        label: 'AutoRoute',
+                        data: [10, 9.5, 9.5, 10, 10, 10, 9.5],
+                        backgroundColor: darkMode ? 'rgba(249, 115, 22, 0.8)' : 'rgba(251, 146, 60, 0.8)',
+                        borderColor: colors.primary,
+                        borderWidth: 2
                     }]
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: true,
+                    indexAxis: 'y',
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            max: 10,
+                            ticks: { 
+                                color: colors.text,
+                                font: { size: 12 }
+                            },
+                            grid: { color: colors.grid }
+                        },
+                        y: {
+                            ticks: { 
+                                color: colors.text,
+                                font: { size: 11 }
+                            },
+                            grid: { color: colors.grid }
+                        }
+                    },
                     plugins: {
                         legend: {
                             labels: { 
                                 color: colors.text,
-                                font: { size: 14 }
+                                font: { size: 13 },
+                                padding: 15
                             }
                         },
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
-                                    return context.label + ': ' + context.parsed + ' minutes';
+                                    return context.dataset.label + ': ' + context.parsed.x + '/10';
                                 }
                             }
                         }
@@ -458,14 +685,14 @@
         // Update all charts
         function updateChartColors() {
             createComparisonChart();
-            createTimeSavedChart();
+            createDetailedComparisonChart();
             createSatisfactionChart();
         }
 
         // Initialize charts
         document.addEventListener('DOMContentLoaded', () => {
             createComparisonChart();
-            createTimeSavedChart();
+            createDetailedComparisonChart();
             createSatisfactionChart();
         });
     </script>
