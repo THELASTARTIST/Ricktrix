@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track RickTrix - Real-Time Auto-Rickshaw Tracking</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
+    <style>
+        #map {
+            height: 500px;
+            width: 100%;
+            border-radius: 1rem;
+        }
+
+        .pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .tracking-marker {
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(-5px);
+            }
+            50% {
+                transform: translateY(0);
+            }
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        .status-active {
+            background: #10b981;
+            box-shadow: 0 0 10px #10b981;
+        }
+
+        .status-idle {
+            background: #f59e0b;
+            box-shadow: 0 0 10px #f59e0b;
+        }
+
+        .status-offline {
+            background: #ef4444;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
+    
+    <!-- Header -->
+    <header class="bg-white dark:bg-gray-800 shadow-sm sticky top-0 z-50 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <a href="index.html" class="flex items-center gap-2">
+                    <div class="relative w-10 h-10">
+                        <div class="absolute inset-0 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl transform rotate-12"></div>
+                        <div class="absolute inset-0 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center">
+                            <svg viewBox="0 0 24 24" class="w-6 h-6 text-white" fill="currentColor">
+                                <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-xl font-bold bg-gradient-to-r from-amber-500 to-orange-600 bg-clip-text text-transparent">RickTrix Tracker</span>
+                        <span class="text-xs text-gray-500 dark:text-gray-400 -mt-1">Live Location</span>
+                    </div>
+                </a>
+                
+                <button id="darkModeToggle" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                    <svg id="sunIcon" class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                    <svg id="moonIcon" class="w-5 h-5 text-orange-500 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        
+        <!-- Status Banner -->
+        <div id="statusBanner" class="bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-2xl p-6 mb-6 shadow-lg">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="bg-white rounded-full p-3">
+                        <svg class="w-6 h-6 text-green-600 pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold">Live Tracking Active</h2>
+                        <p class="text-green-100">Your location is being tracked in real-time</p>
+                    </div>
+                </div>
+                <button id="stopTracking" class="bg-white text-green-600 px-6 py-3 rounded-xl font-semibold hover:shadow-xl transition-all">
+                    Stop Tracking
+                </button>
+            </div>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-6">
+            
+            <!-- Map Section -->
+            <div class="lg:col-span-2">
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200">Live Map View</h3>
+                        <button id="centerMap" class="text-orange-600 hover:text-orange-700 font-semibold text-sm flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                            </svg>
+                            Center on Me
+                        </button>
+                    </div>
+                    <div id="map" class="shadow-inner"></div>
+                    
+                    <!-- Map Controls -->
+                    <div class="mt-4 flex gap-3">
+                        <button id="viewRoute" class="flex-1 bg-orange-50 dark:bg-orange-900 text-orange-600 dark:text-orange-300 px-4 py-3 rounded-xl font-semibold hover:shadow-md transition-all">
+                            View Full Route
+                        </button>
+                        <button id="shareLocation" class="flex-1 bg-blue-50 dark:bg-blue-900 text-blue-600 dark:text-blue-300 px-4 py-3 rounded-xl font-semibold hover:shadow-md transition-all">
+                            Share Location
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Side Panel -->
+            <div class="space-y-6">
+                
+                <!-- Current Location Info -->
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+                    <h3 class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-4 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        Current Location
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex items-start gap-3">
+                            <svg class="w-5 h-5 text-gray-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                            </svg>
+                            <div>
+                                <div class="text-sm text-gray-500 dark:text-gray-400">Address</div>
+                                <div id="currentAddress" class="font-semibold text-gray-800 dark:text-gray-200">Detecting location...</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <svg class="w-5 h-5 text-gray-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <div>
+                                <div class="text-sm text-gray-500 dark:text-gray-400">Last Updated</div>
+                                <div id="lastUpdate" class="font-semibold text-gray-800 dark:text-gray-200">Just now</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <svg class="w-5 h-5 text-gray-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+                            </svg>
+                            <div>
+                                <div class="text-sm text-gray-500 dark:text-gray-400">Coordinates</div>
+                                <div id="coordinates" class="font-mono text-xs text-gray-800 dark:text-gray-200">--°, --°</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nearby RickTrix -->
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+                    <h3 class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-4 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-orange-600" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/>
+                        </svg>
+                        Nearby RickTrix
+                    </h3>
+                    <div id="nearbyRickshaw" class="space-y-3">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+                    <h3 class="text-lg font-bold text-gray-800 dark:text-gray-200 mb-4">Quick Actions</h3>
+                    <div class="space-y-2">
+                        <button class="w-full text-left px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors flex items-center gap-3">
+                            <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path>
+                            </svg>
+                            <span class="text-gray-700 dark:text-gray-300">Share with Friends</span>
+                        </button>
+                        <button class="w-full text-left px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors flex items-center gap-3">
+                            <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <span class="text-gray-700 dark:text-gray-300">Set ETA Alert</span>
+                        </button>
+                        <button class="w-full text-left px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors flex items-center gap-3">
+                            <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                            </svg>
+                            <span class="text-gray-700 dark:text-gray-300">View Trip History</span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Google Maps API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDJeNUCX_pNxF5oVmLGf-KfPdDwU2pfJus&callback=initMap" async defer></script>
+
+    <script>
+        let map;
+        let userMarker;
+        let watchId;
+        let darkMode = localStorage.getItem('autoroute-darkmode') === 'true';
+
+        // Sample nearby rickshaw data
+        const nearbyRickshaws = [
+            { id: 1, driver: 'Rajesh Kumar', distance: '0.2 km', status: 'active', route: 'Howrah → Salt Lake' },
+            { id: 2, driver: 'Amit Singh', distance: '0.5 km', status: 'active', route: 'Park Circus → Garia' },
+            { id: 3, driver: 'Suresh Pal', distance: '0.8 km', status: 'idle', route: 'Available' },
+            { id: 4, driver: 'Dinesh Roy', distance: '1.2 km', status: 'active', route: 'Jadavpur → Tollygunge' }
+        ];
+
+        // Initialize Google Map
+        function initMap() {
+            // Default location (Kolkata)
+            const defaultLocation = { lat: 22.5726, lng: 88.3639 };
+
+            // Map options
+            const mapOptions = {
+                zoom: 15,
+                center: defaultLocation,
+                styles: darkMode ? getDarkMapStyles() : [],
+                disableDefaultUI: false,
+                zoomControl: true,
+                mapTypeControl: false,
+                streetViewControl: false,
+                fullscreenControl: true
+            };
+
+            map = new google.maps.Map(document.getElementById('map'), mapOptions);
+
+            // Try to get user's location
+            if (navigator.geolocation) {
+                startTracking();
+            } else {
+                alert('Geolocation is not supported by your browser');
+            }
+
+            // Add sample nearby rickshaw markers
+            addNearbyRickshawMarkers();
+        }
+
+        function startTracking() {
+            watchId = navigator.geolocation.watchPosition(
+                (position) => {
+                    const userLocation = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+
+                    updateUserLocation(userLocation);
+                    updateLocationInfo(userLocation, position);
+                },
+                (error) => {
+                    console.error('Error getting location:', error);
+                    alert('Unable to retrieve your location. Please enable location services.');
+                },
+                {
+                    enableHighAccuracy: true,
+                    maximumAge: 0,
+                    timeout: 5000
+                }
+            );
+        }
+
+        function updateUserLocation(location) {
+            // Center map on user location
+            map.setCenter(location);
+
+            // Create or update user marker
+            if (!userMarker) {
+                userMarker = new google.maps.Marker({
+                    position: location,
+                    map: map,
+                    title: 'Your Location',
+                    icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        scale: 12,
+                        fillColor: '#3B82F6',
+                        fillOpacity: 1,
+                        strokeColor: '#FFFFFF',
+                        strokeWeight: 3
+                    },
+                    animation: google.maps.Animation.DROP
+                });
+
+                // Add circle around user
+                new google.maps.Circle({
+                    map: map,
+                    radius: 50,
+                    fillColor: '#3B82F6',
+                    fillOpacity: 0.2,
+                    strokeColor: '#3B82F6',
+                    strokeOpacity: 0.5,
+                    strokeWeight: 1,
+                    center: location
+                });
+            } else {
+                userMarker.setPosition(location);
+            }
+        }
+
+        function updateLocationInfo(location, position) {
+            // Update coordinates
+            document.getElementById('coordinates').textContent = 
+                `${location.lat.toFixed(6)}°, ${location.lng.toFixed(6)}°`;
+
+            // Update last update time
+            const now = new Date();
+            document.getElementById('lastUpdate').textContent = 
+                now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+            // Reverse geocoding to get address
+            const geocoder = new google.maps.Geocoder();
+            geocoder.geocode({ location: location }, (results, status) => {
+                if (status === 'OK' && results[0]) {
+                    document.getElementById('currentAddress').textContent = 
+                        results[0].formatted_address;
+                }
+            });
+        }
+
+        function addNearbyRickshawMarkers() {
+            nearbyRickshaws.forEach((rickshaw, index) => {
+                // Random nearby location
+                const offset = 0.01;
+                const randomLat = 22.5726 + (Math.random() - 0.5) * offset;
+                const randomLng = 88.3639 + (Math.random() - 0.5) * offset;
+
+                const marker = new google.maps.Marker({
+                    position: { lat: randomLat, lng: randomLng },
+                    map: map,
+                    title: rickshaw.driver,
+                    icon: {
+                        url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="${rickshaw.status === 'active' ? '#10b981' : '#f59e0b'}">
+                                <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/>
+                            </svg>
+                        `),
+                        scaledSize: new google.maps.Size(40, 40)
+                    }
+                });
+
+                const infoWindow = new google.maps.InfoWindow({
+                    content: `
+                        <div style="padding: 10px; font-family: Arial, sans-serif;">
+                            <h3 style="margin: 0 0 5px 0; color: #f59e0b; font-size: 16px;">${rickshaw.driver}</h3>
+                            <p style="margin: 5px 0; font-size: 14px;"><strong>Route:</strong> ${rickshaw.route}</p>
+                            <p style="margin: 5px 0; font-size: 14px;"><strong>Distance:</strong> ${rickshaw.distance}</p>
+                            <p style="margin: 5px 0; font-size: 14px;">
+                                <strong>Status:</strong> 
+                                <span style="color: ${rickshaw.status === 'active' ? '#10b981' : '#f59e0b'}">
+                                    ${rickshaw.status.charAt(0).toUpperCase() + rickshaw.status.slice(1)}
+                                </span>
+                            </p>
+                        </div>
+                    `
+                });
+
+                marker.addListener('click', () => {
+                    infoWindow.open(map, marker);
+                });
+            });
+
+            // Display in sidebar
+            displayNearbyRickshaws();
+        }
+
+        function displayNearbyRickshaws() {
+            const container = document.getElementById('nearbyRickshaw');
+            container.innerHTML = nearbyRickshaws.map(rickshaw => `
+                <div class="p-3 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="font-semibold text-gray-800 dark:text-gray-200">${rickshaw.driver}</div>
+                        <span class="status-indicator status-${rickshaw.status}"></span>
+                    </div>
+                    <div class="text-sm text-gray-600 dark:text-gray-400">${rickshaw.route}</div>
+                    <div class="text-xs text-gray-500 dark:text-gray-500 mt-1">${rickshaw.distance} away</div>
+                </div>
+            `).join('');
+        }
+
+        function getDarkMapStyles() {
+            return [
+                { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
+                { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
+                { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] },
+                {
+                    featureType: "administrative.locality",
+                    elementType: "labels.text.fill",
+                    stylers: [{ color: "#d59563" }]
+                },
+                {
+                    featureType: "poi",
+                    elementType: "labels.text.fill",
+                    stylers: [{ color: "#d59563" }]
+                },
+                {
+                    featureType: "poi.park",
+                    elementType: "geometry",
+                    stylers: [{ color: "#263c3f" }]
+                },
+                {
+                    featureType: "poi.park",
+                    elementType: "labels.text.fill",
+                    stylers: [{ color: "#6b9a76" }]
+                },
+                {
+                    featureType: "road",
+                    elementType: "geometry",
+                    stylers: [{ color: "#38414e" }]
+                },
+                {
+                    featureType: "road",
+                    elementType: "geometry.stroke",
+                    stylers: [{ color: "#212a37" }]
+                },
+                {
+                    featureType: "road",
+                    elementType: "labels.text.fill",
+                    stylers: [{ color: "#9ca5b3" }]
+                },
+                {
+                    featureType: "road.highway",
+                    elementType: "geometry",
+                    stylers: [{ color: "#746855" }]
+                },
+                {
+                    featureType: "road.highway",
+                    elementType: "geometry.stroke",
+                    stylers: [{ color: "#1f2835" }]
+                },
+                {
+                    featureType: "road.highway",
+                    elementType: "labels.text.fill",
+                    stylers: [{ color: "#f3d19c" }]
+                },
+                {
+                    featureType: "transit",
+                    elementType: "geometry",
+                    stylers: [{ color: "#2f3948" }]
+                },
+                {
+                    featureType: "transit.station",
+                    elementType: "labels.text.fill",
+                    stylers: [{ color: "#d59563" }]
+                },
+                {
+                    featureType: "water",
+                    elementType: "geometry",
+                    stylers: [{ color: "#17263c" }]
+                },
+                {
+                    featureType: "water",
+                    elementType: "labels.text.fill",
+                    stylers: [{ color: "#515c6d" }]
+                },
+                {
+                    featureType: "water",
+                    elementType: "labels.text.stroke",
+                    stylers: [{ color: "#17263c" }]
+                }
+            ];
+        }
+
+        // Dark Mode Toggle
+        function initDarkMode() {
+            if (darkMode) {
+                document.documentElement.classList.add('dark');
+                document.getElementById('sunIcon').classList.add('hidden');
+                document.getElementById('moonIcon').classList.remove('hidden');
+            } else {
+                document.documentElement.classList.remove('dark');
+                document.getElementById('sunIcon').classList.remove('hidden');
+                document.getElementById('moonIcon').classList.add('hidden');
+            }
+        }
+
+        document.getElementById('darkModeToggle').addEventListener('click', () => {
+            darkMode = !darkMode;
+            localStorage.setItem('autoroute-darkmode', darkMode);
+            initDarkMode();
+            
+            // Update map style
+            if (map) {
+                map.setOptions({
+                    styles: darkMode ? getDarkMapStyles() : []
+                });
+            }
+        });
+
+        // Center map on user location
+        document.getElementById('centerMap').addEventListener('click', () => {
+            if (userMarker) {
+                map.setCenter(userMarker.getPosition());
+                map.setZoom(16);
+            }
+        });
+
+        // Stop tracking
+        document.getElementById('stopTracking').addEventListener('click', () => {
+            if (watchId) {
+                navigator.geolocation.clearWatch(watchId);
+                document.getElementById('statusBanner').innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="bg-white rounded-full p-3">
+                                <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h2 class="text-2xl font-bold">Tracking Stopped</h2>
+                                <p class="text-gray-200">Location tracking has been disabled</p>
+                            </div>
+                        </div>
+                        <button onclick="location.reload()" class="bg-white text-gray-600 px-6 py-3 rounded-xl font-semibold hover:shadow-xl transition-all">
+                            Restart Tracking
+                        </button>
+                    </div>
+                `;
+                document.getElementById('statusBanner').className = 'bg-gradient-to-r from-gray-500 to-gray-600 text-white rounded-2xl p-6 mb-6 shadow-lg';
+            }
+        });
+
+        // Share location
+        document.getElementById('shareLocation').addEventListener('click', () => {
+            if (navigator.share && userMarker) {
+                const position = userMarker.getPosition();
+                const shareUrl = `https://www.google.com/maps?q=${position.lat()},${position.lng()}`;
+                
+                navigator.share({
+                    title: 'My RickTrix Location',
+                    text: 'Track my auto-rickshaw ride on RickTrix',
+                    url: shareUrl
+                }).catch((error) => console.log('Error sharing:', error));
+            } else {
+                // Fallback: Copy to clipboard
+                if (userMarker) {
+                    const position = userMarker.getPosition();
+                    const shareUrl = `https://www.google.com/maps?q=${position.lat()},${position.lng()}`;
+                    navigator.clipboard.writeText(shareUrl).then(() => {
+                        alert('Location link copied to clipboard!');
+                    });
+                }
+            }
+        });
+
+        // View full route
+        document.getElementById('viewRoute').addEventListener('click', () => {
+            if (userMarker) {
+                // Create a sample route path
+                const userPos = userMarker.getPosition();
+                const destination = new google.maps.LatLng(
+                    userPos.lat() + 0.01,
+                    userPos.lng() + 0.01
+                );
+
+                const routePath = new google.maps.Polyline({
+                    path: [userPos, destination],
+                    geodesic: true,
+                    strokeColor: '#f59e0b',
+                    strokeOpacity: 1.0,
+                    strokeWeight: 4,
+                    map: map
+                });
+
+                // Add destination marker
+                new google.maps.Marker({
+                    position: destination,
+                    map: map,
+                    title: 'Destination',
+                    icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        scale: 10,
+                        fillColor: '#ef4444',
+                        fillOpacity: 1,
+                        strokeColor: '#FFFFFF',
+                        strokeWeight: 2
+                    }
+                });
+
+                // Fit bounds to show entire route
+                const bounds = new google.maps.LatLngBounds();
+                bounds.extend(userPos);
+                bounds.extend(destination);
+                map.fitBounds(bounds);
+            }
+        });
+
+        // Initialize dark mode on page load
+        initDarkMode();
+
+        // Simulate real-time updates for nearby rickshaws
+        setInterval(() => {
+            // Update distances randomly to simulate movement
+            nearbyRickshaws.forEach(rickshaw => {
+                const currentDist = parseFloat(rickshaw.distance);
+                const change = (Math.random() - 0.5) * 0.2;
+                const newDist = Math.max(0.1, currentDist + change).toFixed(1);
+                rickshaw.distance = newDist + ' km';
+            });
+            displayNearbyRickshaws();
+        }, 5000);
+    </script>
+</body>
+</html>
