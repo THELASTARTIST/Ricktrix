@@ -17,6 +17,60 @@ const routesList = document.getElementById('routesList');
 const popularStopsContainer = document.getElementById('popularStops');
 const darkModeToggle = document.getElementById('darkModeToggle');
 
+// Sample routes data
+const sampleRoutes = [
+    {
+        from: 'Ahiritola Launch Ghat',
+        to: 'Beadon Street A.P.C. Road Crossing',
+        fare: '₹70',
+        vehicles: 70,
+        middleStops: ['Beadon Street']
+    },
+    {
+        from: 'Ahiritola Launch Ghat',
+        to: 'Ultadanga Station',
+        fare: '₹195',
+        vehicles: 195,
+        middleStops: ['Ahiritola St.', 'B.K. Pal Avenue', 'Aurobindo Setu']
+    },
+    {
+        from: 'Ballygunge Station',
+        to: 'Hazra More',
+        fare: '₹30',
+        vehicles: 30,
+        middleStops: []
+    },
+    {
+        from: 'Esplanade Bus Stand',
+        to: 'Howrah Station',
+        fare: '₹175',
+        vehicles: 175,
+        middleStops: ['Strand Road', 'Howrah Bridge']
+    },
+    {
+        from: 'Garia',
+        to: 'Howrah Station',
+        fare: '₹125',
+        vehicles: 523,
+        middleStops: []
+    },
+    {
+        from: 'Dum Dum Station',
+        to: 'Shyambazar',
+        fare: '₹200',
+        vehicles: 200,
+        middleStops: ['Dum Dum Road', 'B.T. Road']
+    }
+];
+
+// Popular stops data
+const popularStopsData = [
+    'Howrah Station',
+    'Salt Lake',
+    'Park Circus',
+    'Sealdah'
+];
+
 // Initialize dark mode
 function initDarkMode() {
     if (darkMode) {
@@ -265,34 +319,94 @@ function toggleRoute(routeId) {
     }
 }
 
-// Initialize app on page load
-document.addEventListener('DOMContentLoaded', () => {
-    initDarkMode();
-    updatePageLanguage();
-    renderRoutes();
-    renderPopularStops();
-    
-    // Add enter key support for search
-    fromLocation.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            toLocation.focus();
-        }
-    });
-    
-    toLocation.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            searchBtn.click();
-        }
-    });
-});
-
-// Close mobile menu when clicking outside
-document.addEventListener('click', (e) => {
-    if (!mobileMenu.classList.contains('hidden') && 
-        !mobileMenu.contains(e.target) && 
-        !menuBtn.contains(e.target)) {
-        mobileMenu.classList.add('hidden');
-        menuIcon.classList.remove('hidden');
-        closeIcon.classList.add('hidden');
+// Display routes
+function displayRoutes() {
+    const routesList = document.getElementById('routesList');
+    if (!routesList) {
+        console.log('routesList element not found');
+        return;
     }
-});
+    
+    if (sampleRoutes.length === 0) {
+        routesList.innerHTML = '<div class="text-center text-gray-500">No routes found</div>';
+        return;
+    }
+    
+    routesList.innerHTML = sampleRoutes.map((route, index) => `
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 hover:shadow-2xl transition-all hover:scale-[1.01] border border-gray-100 dark:border-gray-700">
+            <div class="flex items-start justify-between mb-4">
+                <div class="flex-1">
+                    <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2 leading-tight">
+                        ${route.from} <span class="text-orange-500">→</span> ${route.to}
+                    </h3>
+                    ${route.middleStops && route.middleStops.length > 0 ? `
+                        <div class="flex flex-wrap gap-2 mt-3">
+                            ${route.middleStops.map(stop => `
+                                <span class="text-xs bg-orange-50 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 px-3 py-1 rounded-full font-medium border border-orange-200 dark:border-orange-700">
+                                    ${stop}
+                                </span>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+                </div>
+                <div class="ml-4">
+                    <div class="bg-gradient-to-br from-orange-500 to-orange-600 text-white px-4 py-2 rounded-xl text-center shadow-lg">
+                        <div class="text-xs font-semibold opacity-90">Fare</div>
+                        <div class="text-lg font-black">${route.fare}</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-700">
+                <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                    <svg class="w-5 h-5 text-orange-500" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/>
+                    </svg>
+                    <span class="font-semibold">${route.vehicles} RickTrix</span>
+                </div>
+                <button onclick="viewRouteDetails(${index})" class="bg-orange-50 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 px-5 py-2 rounded-xl font-bold text-sm hover:bg-orange-100 dark:hover:bg-orange-900/50 transition-all flex items-center gap-2 border border-orange-200 dark:border-orange-700">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+                    </svg>
+                    View Details
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Display popular stops
+function displayPopularStops() {
+    const popularStops = document.getElementById('popularStops');
+    if (!popularStops) {
+        console.log('popularStops element not found');
+        return;
+    }
+    
+    popularStops.innerHTML = popularStopsData.map(stop => `
+        <button class="bg-orange-50 dark:bg-orange-900 hover:bg-orange-100 dark:hover:bg-orange-800 text-orange-700 dark:text-orange-200 px-4 py-3 rounded-xl font-semibold transition-colors flex items-center gap-2 border border-orange-200 dark:border-orange-700">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+            </svg>
+            ${stop}
+        </button>
+    `).join('');
+}
+
+// View route details
+function viewRouteDetails(index) {
+    const route = sampleRoutes[index];
+    alert(`Route Details:\n\nFrom: ${route.from}\nTo: ${route.to}\nFare: ${route.fare}\nAvailable RickTrix: ${route.vehicles}\n\nThis feature will show live tracking and detailed route information soon!`);
+}
+
+// Initialize on page load
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+        displayRoutes();
+        displayPopularStops();
+    });
+} else {
+    // DOM is already loaded
+    displayRoutes();
+    displayPopularStops();
+}

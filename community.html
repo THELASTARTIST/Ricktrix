@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RICKTRIX Community - Connect with Fellow Travelers</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .animate-slide-in {
+            animation: slideIn 0.4s ease-out;
+        }
+
+        .message-bubble {
+            transition: all 0.2s ease;
+        }
+
+        .message-bubble:hover {
+            background-color: rgba(251, 146, 60, 0.05);
+        }
+
+        .channel-item {
+            transition: all 0.2s ease;
+        }
+
+        .channel-item:hover {
+            background-color: rgba(251, 146, 60, 0.1);
+            transform: translateX(4px);
+        }
+
+        .channel-item.active {
+            background-color: rgba(251, 146, 60, 0.15);
+            border-left: 3px solid #f97316;
+        }
+
+        .reaction-btn {
+            transition: all 0.2s ease;
+        }
+
+        .reaction-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .user-status {
+            position: relative;
+        }
+
+        .user-status::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        .user-status.online::after {
+            background-color: #22c55e;
+        }
+
+        .user-status.offline::after {
+            background-color: #6b7280;
+        }
+
+        .typing-indicator span {
+            animation: typing 1.4s infinite;
+            opacity: 0.3;
+        }
+
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% { opacity: 0.3; }
+            30% { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 overflow-hidden">
+    
+    <!-- Main Container -->
+    <div class="flex h-screen">
+        
+        <!-- Sidebar - Channels & Servers -->
+        <div id="sidebar" class="w-80 bg-gray-800 flex flex-col border-r border-gray-700 transition-all duration-300">
+            <!-- Server Header -->
+            <div class="p-4 border-b border-gray-700 bg-gradient-to-r from-amber-500/10 to-orange-500/10">
+                <div class="flex items-center gap-3">
+                    <div class="relative w-12 h-12">
+                        <div class="absolute inset-0 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl"></div>
+                        <div class="absolute inset-0 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center">
+                            <svg viewBox="0 0 24 24" class="w-7 h-7 text-white" fill="currentColor">
+                                <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-black text-white">RICKTRIX</h1>
+                        <p class="text-xs text-gray-400">Community Hub</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Channels List -->
+            <div class="flex-1 overflow-y-auto p-4">
+                <div class="mb-6">
+                    <h3 class="text-xs font-bold text-gray-400 uppercase mb-2 px-2">Text Channels</h3>
+                    <div class="space-y-1">
+                        <div class="channel-item active px-3 py-2 rounded-lg cursor-pointer flex items-center gap-2" onclick="switchChannel('general')">
+                            <span class="text-gray-400">#</span>
+                            <span class="font-semibold">general</span>
+                            <span class="ml-auto bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full">12</span>
+                        </div>
+                        <div class="channel-item px-3 py-2 rounded-lg cursor-pointer flex items-center gap-2" onclick="switchChannel('routes')">
+                            <span class="text-gray-400">#</span>
+                            <span class="font-semibold">route-sharing</span>
+                            <span class="ml-auto bg-gray-600 text-gray-300 text-xs px-2 py-0.5 rounded-full">8</span>
+                        </div>
+                        <div class="channel-item px-3 py-2 rounded-lg cursor-pointer flex items-center gap-2" onclick="switchChannel('tips')">
+                            <span class="text-gray-400">#</span>
+                            <span class="font-semibold">travel-tips</span>
+                            <span class="ml-auto bg-gray-600 text-gray-300 text-xs px-2 py-0.5 rounded-full">5</span>
+                        </div>
+                        <div class="channel-item px-3 py-2 rounded-lg cursor-pointer flex items-center gap-2" onclick="switchChannel('reviews')">
+                            <span class="text-gray-400">#</span>
+                            <span class="font-semibold">driver-reviews</span>
+                        </div>
+                        <div class="channel-item px-3 py-2 rounded-lg cursor-pointer flex items-center gap-2" onclick="switchChannel('feedback')">
+                            <span class="text-gray-400">#</span>
+                            <span class="font-semibold">feedback</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="text-xs font-bold text-gray-400 uppercase mb-2 px-2">Voice Channels</h3>
+                    <div class="space-y-1">
+                        <div class="channel-item px-3 py-2 rounded-lg cursor-pointer flex items-center gap-2">
+                            <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                                <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                            </svg>
+                            <span class="font-semibold">Commuters Lounge</span>
+                        </div>
+                        <div class="channel-item px-3 py-2 rounded-lg cursor-pointer flex items-center gap-2">
+                            <svg class="w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                                <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                            </svg>
+                            <span class="font-semibold">Help Desk</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-xs font-bold text-gray-400 uppercase mb-2 px-2">Online - 1,247</h3>
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-3 px-2 py-1.5 hover:bg-gray-700/50 rounded cursor-pointer">
+                            <div class="user-status online relative w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-sm font-bold">
+                                RK
+                            </div>
+                            <div class="flex-1">
+                                <div class="font-semibold text-sm">Rajesh Kumar</div>
+                                <div class="text-xs text-gray-400">Sharing a route...</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 px-2 py-1.5 hover:bg-gray-700/50 rounded cursor-pointer">
+                            <div class="user-status online relative w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-sm font-bold">
+                                PS
+                            </div>
+                            <div class="flex-1">
+                                <div class="font-semibold text-sm">Priya Sen</div>
+                                <div class="text-xs text-gray-400">Online</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 px-2 py-1.5 hover:bg-gray-700/50 rounded cursor-pointer">
+                            <div class="user-status online relative w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-sm font-bold">
+                                AM
+                            </div>
+                            <div class="flex-1">
+                                <div class="font-semibold text-sm">Amit Mondal</div>
+                                <div class="text-xs text-gray-400">Online</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Profile Footer -->
+            <div class="p-4 bg-gray-900 border-t border-gray-700">
+                <div class="flex items-center gap-3">
+                    <div class="user-status online relative w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-sm font-bold cursor-pointer">
+                        GU
+                    </div>
+                    <div class="flex-1">
+                        <div class="font-semibold text-sm">Guest User</div>
+                        <div class="text-xs text-gray-400">Not logged in</div>
+                    </div>
+                    <button onclick="openLoginModal()" class="p-2 hover:bg-gray-700 rounded-lg transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Chat Area -->
+        <div class="flex-1 flex flex-col bg-gray-900">
+            <!-- Channel Header -->
+            <div class="h-16 bg-gray-800 border-b border-gray-700 flex items-center justify-between px-6">
+                <div class="flex items-center gap-3">
+                    <button onclick="toggleSidebar()" class="lg:hidden p-2 hover:bg-gray-700 rounded-lg">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                    <span class="text-gray-400 text-xl">#</span>
+                    <h2 class="text-xl font-bold" id="channelName">general</h2>
+                    <span class="text-sm text-gray-400">Welcome to the community!</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button class="p-2 hover:bg-gray-700 rounded-lg transition-colors" title="Search">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </button>
+                    <button class="p-2 hover:bg-gray-700 rounded-lg transition-colors" title="Notifications">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                        </svg>
+                    </button>
+                    <button class="p-2 hover:bg-gray-700 rounded-lg transition-colors" title="Members">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        </svg>
+                    </button>
+                    <a href="index.html" class="p-2 hover:bg-gray-700 rounded-lg transition-colors" title="Back to Home">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Messages Area -->
+            <div id="messagesArea" class="flex-1 overflow-y-auto p-6 space-y-4">
+                <!-- Welcome Message -->
+                <div class="bg-gradient-to-r from-orange-500/20 to-amber-500/20 border border-orange-500/30 rounded-xl p-6 animate-fade-in">
+                    <div class="flex items-start gap-4">
+                        <div class="w-16 h-16 bg-gradient-to-br from-amber-500 to-orange-600 rounded-full flex items-center justify-center flex-shrink-0">
+                            <svg viewBox="0 0 24 24" class="w-10 h-10 text-white" fill="currentColor">
+                                <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-white mb-2">Welcome to RICKTRIX Community! 🎉</h3>
+                            <p class="text-gray-300 mb-4">Connect with 28,000+ travelers, share routes, get tips, and help build Kolkata's best auto-rickshaw network!</p>
+                            <div class="flex gap-3">
+                                <button onclick="openLoginModal()" class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg font-semibold transition-all">
+                                    Join the Community
+                                </button>
+                                <button class="bg-gray-700 hover:bg-gray-600 text-white px-6 py-2 rounded-lg font-semibold transition-all">
+                                    Learn More
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sample Messages -->
+                <div class="message-bubble flex gap-4 p-4 rounded-lg animate-slide-in">
+                    <div class="user-status online relative w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
+                        RK
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="font-bold text-white">Rajesh Kumar</span>
+                            <span class="text-xs text-gray-400">Today at 2:45 PM</span>
+                        </div>
+                        <p class="text-gray-300">Hey everyone! Just found a great new route from Howrah to Salt Lake via EM Bypass. Takes only 25 minutes during peak hours! 🚗💨</p>
+                        <div class="flex gap-2 mt-2">
+                            <button class="reaction-btn flex items-center gap-1 bg-gray-800 hover:bg-gray-700 px-3 py-1 rounded-full text-sm">
+                                👍 12
+                            </button>
+                            <button class="reaction-btn flex items-center gap-1 bg-gray-800 hover:bg-gray-700 px-3 py-1 rounded-full text-sm">
+                                🔥 8
+                            </button>
+                            <button class="reaction-btn flex items-center gap-1 bg-gray-800 hover:bg-gray-700 px-3 py-1 rounded-full text-sm">
+                                ❤️ 5
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="message-bubble flex gap-4 p-4 rounded-lg animate-slide-in">
+                    <div class="user-status online relative w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
+                        PS
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="font-bold text-white">Priya Sen</span>
+                            <span class="text-xs text-gray-400">Today at 2:48 PM</span>
+                        </div>
+                        <p class="text-gray-300">@Rajesh Kumar That's awesome! What's the fare for that route? And is it available during night time too?</p>
+                    </div>
+                </div>
+
+                <div class="message-bubble flex gap-4 p-4 rounded-lg animate-slide-in">
+                    <div class="user-status online relative w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
+                        RK
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="font-bold text-white">Rajesh Kumar</span>
+                            <span class="text-xs text-gray-400">Today at 2:50 PM</span>
+                        </div>
+                        <p class="text-gray-300">@Priya Sen The fare is around ₹150-175 depending on traffic. Yes, it runs till 11 PM! Perfect for office commuters 👌</p>
+                    </div>
+                </div>
+
+                <div class="message-bubble flex gap-4 p-4 rounded-lg animate-slide-in">
+                    <div class="user-status online relative w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
+                        AM
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="font-bold text-white">Amit Mondal</span>
+                            <span class="text-xs text-gray-400">Today at 3:15 PM</span>
+                        </div>
+                        <p class="text-gray-300">Quick tip for everyone: Always ask the driver for the route before getting in. Some drivers take longer routes to charge more. Stay safe and smart! 🛡️</p>
+                        <div class="flex gap-2 mt-2">
+                            <button class="reaction-btn flex items-center gap-1 bg-gray-800 hover:bg-gray-700 px-3 py-1 rounded-full text-sm">
+                                💯 15
+                            </button>
+                            <button class="reaction-btn flex items-center gap-1 bg-gray-800 hover:bg-gray-700 px-3 py-1 rounded-full text-sm">
+                                👍 20
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="message-bubble flex gap-4 p-4 rounded-lg bg-purple-500/10 border border-purple-500/30 animate-slide-in">
+                    <div class="user-status online relative w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
+                        📢
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="font-bold text-purple-400">RICKTRIX Bot</span>
+                            <span class="bg-purple-500 text-white text-xs px-2 py-0.5 rounded">BOT</span>
+                            <span class="text-xs text-gray-400">Today at 3:30 PM</span>
+                        </div>
+                        <p class="text-gray-300">🎊 Milestone Alert! Our community has reached <strong class="text-white">28,000 members</strong>! Thank you for making RICKTRIX the best travel companion in Kolkata! 🙏</p>
+                    </div>
+                </div>
+
+                <!-- Typing Indicator -->
+                <div class="flex gap-4 p-4 rounded-lg opacity-70">
+                    <div class="user-status online relative w-10 h-10 bg-pink-500 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
+                        SK
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="font-bold text-white">Sneha Khan</span>
+                            <span class="text-xs text-gray-400">is typing...</span>
+                        </div>
+                        <div class="typing-indicator flex gap-1">
+                            <span class="w-2 h-2 bg-gray-500 rounded-full"></span>
+                            <span class="w-2 h-2 bg-gray-500 rounded-full"></span>
+                            <span class="w-2 h-2 bg-gray-500 rounded-full"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Message Input -->
+            <div class="p-6 bg-gray-800 border-t border-gray-700">
+                <div class="bg-gray-700 rounded-xl p-4">
+                    <textarea id="messageInput" rows="1" placeholder="Message #general (Login to send messages)" 
+                        class="w-full bg-transparent text-white placeholder-gray-400 resize-none focus:outline-none" 
+                        disabled></textarea>
+                    <div class="flex items-center justify-between mt-3">
+                        <div class="flex gap-2">
+                            <button class="p-2 hover:bg-gray-600 rounded-lg transition-colors opacity-50 cursor-not-allowed" disabled>
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                </svg>
+                            </button>
+                            <button class="p-2 hover:bg-gray-600 rounded-lg transition-colors opacity-50 cursor-not-allowed" disabled>
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </button>
+                            <button class="p-2 hover:bg-gray-600 rounded-lg transition-colors opacity-50 cursor-not-allowed" disabled>
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <button onclick="openLoginModal()" class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg font-semibold transition-all">
+                            Login to Send
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-gray-800 rounded-2xl shadow-2xl max-w-md w-full p-8 animate-fade-in">
+            <div class="text-center mb-6">
+                <div class="w-20 h-20 bg-gradient-to-br from-amber-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg viewBox="0 0 24 24" class="w-12 h-12 text-white" fill="currentColor">
+                        <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/>
+                    </svg>
+                </div>
+                <h2 class="text-3xl font-black text-white mb-2">Welcome Back!</h2>
+                <p class="text-gray-400">Login to join the conversation</p>
+            </div>
+
+            <form onsubmit="handleLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-300 mb-2">Email or Phone</label>
+                    <input type="text" required 
+                        class="w-full bg-gray-700 text-white px-4 py-3 rounded-xl focus:ring-2 focus:ring-orange-500 focus:outline-none"
+                        placeholder="Enter your email or phone">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-300 mb-2">Password</label>
+                    <input type="password" required 
+                        class="w-full bg-gray-700 text-white px-4 py-3 rounded-xl focus:ring-2 focus:ring-orange-500 focus:outline-none"
+                        placeholder="Enter your password">
+                </div>
+
+                <div class="flex items-center justify-between text-sm">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" class="w-4 h-4 rounded">
+                        <span class="text-gray-400">Remember me</span>
+                    </label>
+                    <a href="#" class="text-orange-500 hover:text-orange-400">Forgot password?</a>
+                </div>
+
+                <button type="submit" class="w-full bg-gradient-to-r from-amber-500 to-orange-600 text-white py-3 rounded-xl font-bold hover:shadow-xl transition-all">
+                    Login
+                </button>
+            </form>
+
+            <div class="mt-6 text-center">
+                <p class="text-gray-400 mb-4">Or continue with</p>
+                <div class="flex gap-3">
+                    <button class="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-3 rounded-xl font-semibold transition-all flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                        </svg>
+                        Google
+                    </button>
+                    <button class="flex-1 bg-gray-700 hover:bg-gray-600 text-white py-3 rounded-xl font-semibold transition-all flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                        </svg>
+                        Facebook
+                    </button>
+                </div>
+            </div>
+
+            <div class="mt-6 text-center text-sm">
+                <span class="text-gray-400">Don't have an account?</span>
+                <a href="#" class="text-orange-500 hover:text-orange-400 font-semibold ml-1">Sign up</a>
+            </div>
+
+            <button onclick="closeLoginModal()" class="absolute top-4 right-4 p-2 hover:bg-gray-700 rounded-lg transition-colors">
+                <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let isSidebarOpen = true;
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            isSidebarOpen = !isSidebarOpen;
+            
+            if (isSidebarOpen) {
+                sidebar.classList.remove('-translate-x-full');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+            }
+        }
+
+        function switchChannel(channel) {
+            // Remove active class from all channels
+            document.querySelectorAll('.channel-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Add active class to clicked channel
+            event.currentTarget.classList.add('active');
+            
+            // Update channel name
+            const channelNames = {
+                'general': 'general',
+                'routes': 'route-sharing',
+                'tips': 'travel-tips',
+                'reviews': 'driver-reviews',
+                'feedback': 'feedback'
+            };
+            
+            document.getElementById('channelName').textContent = channelNames[channel];
+            
+            // In a real app, load different messages here
+            showNotification(`Switched to #${channelNames[channel]}`);
+        }
+
+        function openLoginModal() {
+            document.getElementById('loginModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLoginModal() {
+            document.getElementById('loginModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            showNotification('Login feature coming soon! This is a demo.');
+            closeLoginModal();
+        }
+
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'fixed bottom-6 right-6 bg-orange-500 text-white px-6 py-3 rounded-xl shadow-2xl z-50 animate-fade-in';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Close modal on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeLoginModal();
+            }
+        });
+
+        // Auto-scroll to bottom of messages
+        const messagesArea = document.getElementById('messagesArea');
+        messagesArea.scrollTop = messagesArea.scrollHeight;
+
+        // Handle responsive sidebar
+        function handleResize() {
+            const sidebar = document.getElementById('sidebar');
+            if (window.innerWidth < 1024) {
+                sidebar.classList.add('-translate-x-full', 'absolute', 'inset-y-0', 'left-0', 'z-40');
+                isSidebarOpen = false;
+            } else {
+                sidebar.classList.remove('-translate-x-full', 'absolute', 'inset-y-0', 'left-0', 'z-40');
+                isSidebarOpen = true;
+            }
+        }
+
+        window.addEventListener('resize', handleResize);
+        handleResize();
+    </script>
+</body>
+</html>

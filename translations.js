@@ -170,3 +170,56 @@ function translateLocation(location) {
     // You can add translations here if needed
     return location;
 }
+
+// Language change function
+function changeLanguage(lang) {
+    localStorage.setItem('autoroute-language', lang);
+    updateUITranslations();
+    location.reload();
+}
+
+// Update UI translations
+function updateUITranslations() {
+    const lang = localStorage.getItem('autoroute-language') || 'en';
+    document.getElementById('langDisplay').textContent = lang.toUpperCase();
+    
+    // Update hero section
+    if (document.getElementById('heroTitle')) {
+        document.getElementById('heroTitle').textContent = t('heroTitle');
+        document.getElementById('heroSubtitle').textContent = t('heroSubtitle');
+        document.getElementById('searchBtnText').textContent = t('findRoutes');
+    }
+    
+    // Update sections
+    if (document.getElementById('popularStopsTitle')) {
+        document.getElementById('popularStopsTitle').textContent = t('popularStops');
+    }
+    if (document.getElementById('availableRoutesTitle')) {
+        document.getElementById('availableRoutesTitle').textContent = t('availableRoutes');
+    }
+    if (document.getElementById('stat1')) {
+        document.getElementById('stat1').textContent = t('routes');
+        document.getElementById('stat2').textContent = t('users');
+        document.getElementById('stat3').textContent = t('areas');
+    }
+    
+    // Update CTA
+    if (document.getElementById('ctaTitle')) {
+        document.getElementById('ctaTitle').textContent = t('ctaTitle');
+        document.getElementById('ctaSubtitle').textContent = t('ctaSubtitle');
+        document.getElementById('ctaButton').textContent = t('submitRoute');
+    }
+    
+    // Update footer
+    if (document.getElementById('footerText')) {
+        document.getElementById('footerText').textContent = t('footerText');
+        document.getElementById('copyright').textContent = t('copyright');
+    }
+}
+
+// Initialize translations on page load
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', updateUITranslations);
+} else {
+    updateUITranslations();
+}
