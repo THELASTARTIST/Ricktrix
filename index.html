@@ -1,446 +1,449 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AutoRoute - Smart Auto-Rickshaw Route Finder</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class'
-        }
-    </script>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>RICKTRIX — Find your share-auto route</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700;800&family=Work+Sans:wght@400;500;600&family=Noto+Sans+Bengali:wght@500;600&family=Noto+Sans+Devanagari:wght@500;600&display=swap" rel="stylesheet">
+<script>
+try{
+  var t = localStorage.getItem('ricktrix-theme') || ((window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-theme', t);
+}catch(e){}
+</script>
+<style>
+:root{
+  --bg:#FFFFFF; --surface:#FFFFFF; --surface-2:#FAFAFA; --surface-3:#F2F2F2;
+  --text:#0A0A0A; --text-60:rgba(10,10,10,.6); --text-40:rgba(10,10,10,.4);
+  --orange:#FF6A1A; --orange-dark:#E4590F; --orange-tint:#FFF1E6; --orange-tint-2:#FFE2CC;
+  --line: rgba(10,10,10,.1);
+}
+:root[data-theme="dark"]{
+  --bg:#0A0A0A; --surface:#141414; --surface-2:#1A1A1A; --surface-3:#242424;
+  --text:#FFFFFF; --text-60:rgba(255,255,255,.62); --text-40:rgba(255,255,255,.4);
+  --orange:#FF7A2E; --orange-dark:#FF6A1A; --orange-tint:#2A1B10; --orange-tint-2:#3A2414;
+  --line: rgba(255,255,255,.12);
+}
+*{box-sizing:border-box;}
+body{margin:0; background:var(--bg); color:var(--text); font-family:'Work Sans',system-ui,sans-serif; -webkit-font-smoothing:antialiased;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px); transition:background .2s ease, color .2s ease;}
+h1,h2,h3,.disp{font-family:'Space Grotesk',system-ui,sans-serif;}
+a{color:inherit; text-decoration:none;}
+.wrap{max-width:1180px; margin:0 auto; padding:0 22px;}
+
+/* nav */
+header{position:sticky; top:env(safe-area-inset-top,0px); z-index:50; background:var(--bg); border-bottom:1px solid var(--line);}
+.headbar{display:flex; align-items:center; justify-content:space-between; padding:16px 22px; max-width:1180px; margin:0 auto;}
+.brand{display:flex; align-items:center; gap:10px;}
+.badge{width:38px; height:38px; border-radius:11px; background:var(--orange); display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+.brand-name{font-family:'Space Grotesk'; font-weight:800; font-size:18px; letter-spacing:-0.01em;}
+nav.pri{display:flex; gap:6px; align-items:center; background:var(--surface-2); border:1px solid var(--line); border-radius:999px; padding:4px;}
+nav.pri a{text-decoration:none; font-size:13.5px; font-weight:600; padding:8px 16px; border-radius:999px; color:var(--text-60);}
+nav.pri a:hover{color:var(--text);}
+nav.pri a.active{background:var(--orange); color:#fff;}
+@media(max-width:900px){ nav.pri{display:none;} }
+.head-actions{display:flex; align-items:center; gap:8px;}
+.lang-pop{position:relative;}
+.lang-btn{display:flex; align-items:center; gap:6px; padding:8px 12px; border-radius:999px; border:1px solid var(--line); background:var(--surface); color:var(--text); font-size:13px; font-weight:600; cursor:pointer;}
+.lang-menu{position:absolute; right:0; top:calc(100% + 6px); background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:6px; box-shadow:0 16px 40px rgba(0,0,0,.12); display:none; min-width:120px;}
+.lang-menu.open{display:block;}
+.lang-menu button{display:block; width:100%; text-align:left; padding:8px 10px; border-radius:8px; border:none; background:none; color:var(--text); font-size:13.5px; cursor:pointer;}
+.lang-menu button:hover{background:var(--surface-3);}
+.lang-menu button.active{color:var(--orange); font-weight:700;}
+.icon-btn{width:38px; height:38px; border-radius:999px; border:1px solid var(--line); background:var(--surface); color:var(--text); display:flex; align-items:center; justify-content:center; cursor:pointer;}
+.icon-btn:hover{background:var(--surface-3);}
+.hamburger{display:none;}
+@media(max-width:900px){ .hamburger{display:flex;} }
+
+/* mobile drawer */
+.drawer{position:fixed; inset:0; z-index:80; display:none;}
+.drawer.open{display:block;}
+.drawer .backdrop{position:absolute; inset:0; background:rgba(0,0,0,.45);}
+.drawer .panel{position:absolute; top:0; right:0; bottom:0; width:78%; max-width:320px; background:var(--bg); padding:22px; box-shadow:-16px 0 40px rgba(0,0,0,.2);}
+.drawer .panel a{display:block; padding:13px 6px; font-size:16px; font-weight:600; border-bottom:1px solid var(--line);}
+.drawer .close{margin-bottom:20px;}
+
+/* hero */
+.hero{padding:52px 0 20px; position:relative; overflow:hidden;}
+.hero-grid{display:grid; grid-template-columns:1.05fr .95fr; gap:40px; align-items:center;}
+@media(max-width:900px){ .hero-grid{grid-template-columns:1fr;} }
+.pill{display:inline-flex; align-items:center; gap:8px; background:var(--orange-tint); color:var(--orange-dark); font-size:12.5px; font-weight:700; padding:7px 14px; border-radius:999px; margin-bottom:18px;}
+:root[data-theme="dark"] .pill{color:var(--orange);}
+.pill i{width:6px; height:6px; border-radius:50%; background:var(--orange); display:inline-block; animation:pulse 1.6s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+.hero h1{font-size:clamp(34px,5vw,56px); line-height:1.03; margin:0 0 18px; font-weight:800; letter-spacing:-0.02em;}
+.hero h1 .hl{color:var(--orange); position:relative; white-space:nowrap;}
+.hero p.lede{font-size:17px; color:var(--text-60); max-width:46ch; margin:0 0 30px; line-height:1.6;}
+.hero-cta-row{display:flex; gap:12px; flex-wrap:wrap;}
+.btn-solid{background:var(--orange); color:#fff; border:none; padding:15px 26px; border-radius:12px; font-family:'Space Grotesk'; font-weight:700; font-size:15px; cursor:pointer; box-shadow:0 10px 26px rgba(255,106,26,.3); transition:transform .15s ease;}
+.btn-solid:hover{transform:translateY(-2px);}
+.btn-ghost{background:var(--surface); color:var(--text); border:1.5px solid var(--line); padding:14px 24px; border-radius:12px; font-family:'Space Grotesk'; font-weight:700; font-size:15px; cursor:pointer;}
+.mini-stats{display:flex; gap:28px; margin-top:34px;}
+.mini-stats div b{display:block; font-family:'Space Grotesk'; font-size:22px; font-weight:800;}
+.mini-stats div span{font-size:12px; color:var(--text-60);}
+
+/* search card */
+.search-card{background:var(--surface); border:1px solid var(--line); border-radius:20px; padding:22px; box-shadow:0 20px 60px rgba(0,0,0,.06);}
+:root[data-theme="dark"] .search-card{box-shadow:0 20px 60px rgba(0,0,0,.4);}
+.search-card .sc-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;}
+.search-card .sc-head b{font-family:'Space Grotesk'; font-size:15px;}
+.search-card .sc-head .live{font-size:11px; color:var(--orange); font-weight:700; display:flex; align-items:center; gap:5px;}
+.field{position:relative; margin-bottom:10px;}
+.field input{width:100%; padding:15px 15px 15px 42px; border:1.5px solid var(--line); border-radius:12px; font:inherit; font-size:15px; background:var(--surface-2); color:var(--text);}
+.field input:focus{outline:none; border-color:var(--orange);}
+.field .dot{position:absolute; left:15px; top:50%; transform:translateY(-50%); width:9px; height:9px; border-radius:50%;}
+.field.from .dot{background:var(--orange);}
+.field.to .dot{background:var(--text);}
+.go-btn{width:100%; margin-top:6px; background:var(--orange); color:#fff; border:none; padding:15px; border-radius:12px; font-family:'Space Grotesk'; font-weight:700; font-size:15px; cursor:pointer;}
+.go-btn:hover{background:var(--orange-dark);}
+.board-rows{margin-top:16px; border-top:1px solid var(--line); padding-top:14px;}
+.board-row{display:flex; align-items:center; gap:10px; padding:8px 2px; font-size:13px;}
+.board-row .r-ic{width:26px; height:26px; border-radius:8px; background:var(--orange-tint); display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+.board-row .r-route{flex:1; font-weight:600;}
+.board-row .r-fare{color:var(--orange); font-weight:700; font-family:'Space Grotesk';}
+
+/* stats strip */
+.stats-strip{background:var(--surface-2); color:var(--text); border-radius:20px; margin:36px 0; padding:0; border:1px solid var(--line);}
+.stats-strip .row{display:grid; grid-template-columns:repeat(3,1fr); padding:26px 22px;}
+.stats-strip .s{text-align:center; border-left:1px solid var(--line);}
+.stats-strip .s:first-child{border-left:none;}
+.stats-strip .s b{display:block; font-family:'Space Grotesk'; font-size:26px; font-weight:800; color:var(--orange);}
+.stats-strip .s span{font-size:12px; color:var(--text); opacity:.7;}
+
+/* sections */
+.section{padding:40px 0;}
+.sec-head{display:flex; align-items:baseline; justify-content:space-between; margin-bottom:20px; gap:16px;}
+.sec-head h2{font-size:23px; margin:0; font-weight:800;}
+.live-tag{font-size:12px; color:var(--orange); font-weight:700; display:flex; align-items:center; gap:6px;}
+.live-tag i{width:7px;height:7px;border-radius:50%;background:var(--orange); display:inline-block; animation:pulse 1.6s infinite;}
+
+.stops{display:flex; flex-wrap:wrap; gap:10px;}
+.stop-chip{border:1px solid var(--line); border-radius:999px; padding:10px 17px; font-size:13.5px; background:var(--surface); color:var(--text); cursor:pointer; display:flex; align-items:center; gap:8px; font-weight:500; font-family:inherit;}
+.stop-chip:hover{border-color:var(--orange); background:var(--orange-tint); color:var(--orange-dark);}
+:root[data-theme="dark"] .stop-chip:hover{color:var(--orange);}
+
+/* route cards - modern grid, not ticket style */
+.routes-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:14px;}
+@media(max-width:760px){ .routes-grid{grid-template-columns:1fr;} }
+.rcard{background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:20px; transition:border-color .2s ease, transform .2s ease, box-shadow .2s ease;}
+.rcard:hover{border-color:var(--orange); transform:translateY(-3px); box-shadow:0 16px 34px rgba(0,0,0,.06);}
+:root[data-theme="dark"] .rcard:hover{box-shadow:0 16px 34px rgba(0,0,0,.4);}
+.rcard-top{display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:12px;}
+.rcard-ic{width:42px; height:42px; border-radius:12px; background:var(--orange-tint); display:flex; align-items:center; justify-content:center;}
+.rcard-fare{text-align:right;}
+.rcard-fare .lbl{font-size:10.5px; color:var(--text-40); text-transform:uppercase; letter-spacing:.04em;}
+.rcard-fare .amt{font-family:'Space Grotesk'; font-weight:800; font-size:19px; color:var(--orange);}
+.rcard-actions{display:flex; align-items:center; gap:8px;}
+.save-btn{width:36px; height:36px; border-radius:10px; border:1px solid var(--line); background:var(--surface-2); color:var(--text-60); display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;}
+.save-btn:hover{border-color:var(--orange); color:var(--orange);}
+.save-btn.saved{background:var(--orange); border-color:var(--orange); color:#fff;}
+.rcard h3{margin:0 0 10px; font-size:16.5px; font-weight:700;}
+.rcard h3 .arrow{color:var(--text-40); margin:0 6px; font-weight:400;}
+.via-row{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px;}
+.via{font-size:11px; background:var(--surface-2); border-radius:999px; padding:4px 10px; color:var(--text-60);}
+.rcard-foot{display:flex; align-items:center; justify-content:space-between; padding-top:12px; border-top:1px solid var(--line);}
+.rcard-foot .direct{font-size:11.5px; color:var(--text-40);}
+.view-btn{font-size:12.5px; background:var(--surface-2); border:none; border-radius:999px; padding:8px 16px; cursor:pointer; color:var(--text); font-weight:600;}
+.view-btn:hover{background:var(--orange); color:#fff;}
+
+/* CTA */
+.cta{background:var(--orange); border-radius:24px; padding:48px 34px; text-align:center; margin:20px 0 44px; position:relative; overflow:hidden;}
+.cta h2{font-size:26px; margin:0 0 8px; color:#fff; font-weight:800;}
+.cta p{color:rgba(255,255,255,.85); margin:0 0 22px;}
+.cta button{background:#fff; color:var(--orange-dark); border:none; padding:14px 28px; border-radius:12px; font-family:'Space Grotesk'; font-weight:800; cursor:pointer;}
+
+footer{border-top:1px solid var(--line); padding:34px 20px; text-align:center; color:var(--text-60); font-size:13px;}
+footer .fbrand{display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:10px; font-family:'Space Grotesk'; font-weight:800; color:var(--text);}
+
+.toast{position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--text); color:var(--bg); padding:13px 22px; border-radius:999px; font-size:13.5px; font-weight:600; opacity:0; pointer-events:none; transition:opacity .25s ease, transform .25s ease; z-index:100; white-space:nowrap;}
+.toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+.modal{position:fixed; inset:0; background:rgba(0,0,0,.5); backdrop-filter:blur(2px); z-index:90; display:none; align-items:center; justify-content:center; padding:20px;}
+.modal.open{display:flex;}
+.modal-box{background:var(--bg); border-radius:18px; padding:28px; max-width:400px; width:100%; box-shadow:0 30px 70px rgba(0,0,0,.3); position:relative;}
+.modal-box h2{font-size:20px; margin:0 0 6px;}
+.modal-box p.sub{color:var(--text-60); font-size:13.5px; margin:0 0 18px;}
+.mfield{margin-bottom:12px;}
+.mfield label{font-size:12.5px; font-weight:600; display:block; margin-bottom:5px;}
+.mfield input{width:100%; padding:12px 13px; border-radius:10px; border:1.5px solid var(--line); background:var(--surface-2); color:var(--text); font:inherit;}
+.mfield input:focus{outline:none; border-color:var(--orange);}
+.modal-close{position:absolute; top:14px; right:14px; width:30px; height:30px; border-radius:50%; border:none; background:var(--surface-2); color:var(--text-60); cursor:pointer;}
+</style>
 </head>
-<body class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
-    
-    <!-- Header -->
-    <header class="bg-white dark:bg-gray-800 shadow-sm sticky top-0 z-50 transition-colors duration-300">
-        <div class="max-w-7xl mx-auto px-4 py-4">
-            <div class="flex items-center justify-between">
-                <!-- Logo -->
-                <div class="flex items-center gap-2">
-                    <div class="relative w-10 h-10">
-                        <div class="absolute inset-0 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl transform rotate-12"></div>
-                        <div class="absolute inset-0 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center">
-                            <svg viewBox="0 0 24 24" class="w-6 h-6 text-white" fill="currentColor">
-                                <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="flex flex-col">
-                        <span class="text-xl font-bold bg-gradient-to-r from-amber-500 to-orange-600 bg-clip-text text-transparent">AutoRoute</span>
-                        <span class="text-xs text-gray-500 dark:text-gray-400 -mt-1">Smart Travel</span>
-                    </div>
-                </div>
-                
-                <!-- Desktop Navigation (hidden on mobile) -->
-                <nav class="hidden lg:flex items-center gap-8">
-                    <a href="index.html" class="text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 font-medium transition-colors">Home</a>
-                    <a href="#routes" class="text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 font-medium transition-colors">Routes</a>
-                    <a href="tracking.html" class="text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 font-medium transition-colors">Live Tracking</a>
-                    <a href="#saved" class="text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 font-medium transition-colors">Saved Routes</a>
-                    <a href="community.html" class="text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 font-medium transition-colors">Community</a>
-                    <a href="about.html" class="text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 font-medium transition-colors">About</a>
-                </nav>
+<body>
 
-                <!-- Desktop Right Items (hidden on mobile) -->
-                <div class="hidden lg:flex items-center gap-4">
-                    <!-- Language Dropdown -->
-                    <div class="relative group">
-                        <button class="flex items-center gap-2 px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-orange-600 dark:hover:text-orange-400 font-medium transition-colors">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path>
-                            </svg>
-                            <span id="langDisplay">EN</span>
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-                            </svg>
-                        </button>
-                        
-                        <!-- Language Dropdown Menu -->
-                        <div class="absolute right-0 mt-0 w-32 bg-white dark:bg-gray-700 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                            <button onclick="changeLanguage('en')" class="block w-full text-left px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-t-lg transition-colors">
-                                English
-                            </button>
-                            <button onclick="changeLanguage('bn')" class="block w-full text-left px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
-                                বাংলা
-                            </button>
-                            <button onclick="changeLanguage('hi')" class="block w-full text-left px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-b-lg transition-colors">
-                                हिंदी
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <!-- Dark Mode Toggle -->
-                    <button id="darkModeToggleDesktop" title="Toggle dark mode" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
-                        <svg id="sunIconDesktop" class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
-                        </svg>
-                        <svg id="moonIconDesktop" class="w-5 h-5 text-orange-500 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
-                        </svg>
-                    </button>
-                </div>
-
-                <!-- Mobile Right Items -->
-                <div class="lg:hidden flex items-center gap-2">
-                    <!-- Mobile Dark Mode Toggle -->
-                    <button id="darkModeToggleMobile" title="Toggle dark mode" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
-                        <svg id="sunIconMobile" class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
-                        </svg>
-                        <svg id="moonIconMobile" class="w-5 h-5 text-orange-500 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
-                        </svg>
-                    </button>
-                    
-                    <!-- Mobile Hamburger Menu -->
-                    <button id="menuBtn" title="Toggle menu" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
-                        <svg id="menuIcon" class="w-6 h-6 text-gray-800 dark:text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                        </svg>
-                        <svg id="closeIcon" class="w-6 h-6 text-gray-800 dark:text-gray-200 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </button>
-                </div>
-            </div>
+<header>
+  <div class="headbar">
+    <a href="index.html" class="brand">
+      <div class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="#fff"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg></div>
+      <span class="brand-name">RICKTRIX</span>
+    </a>
+    <nav class="pri">
+      <a href="index.html" class="active" data-i18n="navHome">Home</a>
+      <a href="all_routes.html" data-i18n="navRoutes">Routes</a>
+      <a href="tracking.html" data-i18n="navTracking">Tracking</a>
+      <a href="community.html" data-i18n="navCommunity">Community</a>
+      <a href="about.html" data-i18n="navAbout">About</a>
+    </nav>
+    <div class="head-actions">
+      <a class="icon-btn" href="saved_routes.html" title="Saved routes">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 3.1c.3-.9 1.6-.9 1.9 0l1.5 4.7a1 1 0 00.95.7h4.9c1 0 1.4 1.24.6 1.8l-4 2.9a1 1 0 00-.36 1.1l1.5 4.7c.3.9-.75 1.7-1.54 1.1l-4-2.9a1 1 0 00-1.18 0l-4 2.9c-.78.6-1.83-.2-1.53-1.1l1.5-4.7a1 1 0 00-.36-1.1l-4-2.9c-.78-.56-.38-1.8.6-1.8h4.9a1 1 0 00.96-.7z"/></svg>
+      </a>
+      <div class="lang-pop">
+        <button class="lang-btn" id="langBtn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 5h12M9 3v2m1 9.5A18 18 0 016.4 9m6.1 9h7M11 21l5-10 5 10"/></svg>
+          <span id="langLabel">EN</span>
+        </button>
+        <div class="lang-menu" id="langMenu">
+          <button data-lang="en" class="active">English</button>
+          <button data-lang="bn">বাংলা</button>
+          <button data-lang="hi">हिंदी</button>
         </div>
-    </header>
-
-    <!-- Mobile Menu -->
-    <div id="mobileMenu" class="fixed inset-0 bg-white dark:bg-gray-900 z-40 pt-20 px-4 hidden transition-colors duration-300 overflow-y-auto">
-        <nav class="space-y-4">
-            <a href="index.html" onclick="closeMenu()" class="flex items-center gap-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors">
-                <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-3m0 0l7-4 7 4M5 9v10a1 1 0 001 1h12a1 1 0 001-1V9m-9 11l4-4"></path>
-                </svg>
-                <span class="font-medium dark:text-gray-200">Home</span>
-            </a>
-            <a href="index.html#routes" onclick="closeMenu()" class="flex items-center gap-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors">
-                <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                </svg>
-                <span class="font-medium dark:text-gray-200">Routes</span>
-            </a>
-            <a href="tracking.html" onclick="closeMenu()" class="flex items-center gap-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors">
-                <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                </svg>
-                <span class="font-medium dark:text-gray-200">Live Tracking</span>
-            </a>
-            <a href="#saved" onclick="closeMenu()" class="flex items-center gap-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors">
-                <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
-                </svg>
-                <span class="font-medium dark:text-gray-200">Saved Routes</span>
-            </a>
-            <a href="community.html" onclick="closeMenu()" class="flex items-center gap-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors">
-                <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
-                </svg>
-                <span class="font-medium dark:text-gray-200">Community</span>
-            </a>
-            <a href="about.html" onclick="closeMenu()" class="flex items-center gap-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors">
-                <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                <span class="font-medium dark:text-gray-200">About Us</span>
-            </a>
-            
-            <!-- Language Selector -->
-            <div class="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
-                <div class="flex items-center gap-3 p-3">
-                    <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path>
-                    </svg>
-                    <span class="font-medium dark:text-gray-200">Language</span>
-                </div>
-                <div class="ml-8 space-y-2">
-                    <button onclick="changeLanguage('en')" class="block w-full text-left px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg text-gray-700 dark:text-gray-300 transition-colors">
-                        English
-                    </button>
-                    <button onclick="changeLanguage('bn')" class="block w-full text-left px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg text-gray-700 dark:text-gray-300 transition-colors">
-                        বাংলা (Bengali)
-                    </button>
-                    <button onclick="changeLanguage('hi')" class="block w-full text-left px-3 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg text-gray-700 dark:text-gray-300 transition-colors">
-                        हिंदी (Hindi)
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Dark Mode Toggle -->
-            <button id="darkModeToggle" class="flex items-center gap-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg w-full transition-colors">
-                <svg id="sunIcon" class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
-                </svg>
-                <svg id="moonIcon" class="w-5 h-5 text-orange-500 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
-                </svg>
-                <span class="font-medium dark:text-gray-200">Dark Mode</span>
-            </button>
-        </nav>
+      </div>
+      <button class="icon-btn" id="themeToggle" aria-label="Toggle theme">
+        <svg id="sunIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.4 6.4l-.7-.7M6.3 6.3l-.7-.7m12.8 0l-.7.7M6.3 17.7l-.7.7M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+        <svg id="moonIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M20.4 15.4A9 9 0 018.6 3.6 9 9 0 0012 21a9 9 0 008.4-5.6z"/></svg>
+      </button>
+      <button class="icon-btn hamburger" id="drawerBtn" aria-label="Menu">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
     </div>
+  </div>
+</header>
 
-    <!-- Hero Section -->
-    <div class="bg-gradient-to-r from-amber-500 to-orange-600 text-white">
-        <div class="max-w-7xl mx-auto px-4 py-12">
-            <h1 id="heroTitle" class="text-3xl md:text-4xl font-bold mb-3">Find Your Auto Route</h1>
-            <p id="heroSubtitle" class="text-amber-50 text-lg mb-8">Discover shared auto routes across the city in seconds</p>
+<div class="drawer" id="drawer">
+  <div class="backdrop" id="drawerBackdrop"></div>
+  <div class="panel">
+    <button class="icon-btn close" id="drawerClose">✕</button>
+    <a href="index.html" data-i18n="navHome">Home</a>
+    <a href="all_routes.html" data-i18n="navRoutes">Routes</a>
+    <a href="tracking.html" data-i18n="navTracking">Live tracking</a>
+    <a href="community.html" data-i18n="navCommunity">Community</a>
+    <a href="about.html" data-i18n="navAbout">About</a>
+    <a href="saved_routes.html">Saved routes</a>
+  </div>
+</div>
 
-            <!-- Search Box -->
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-4 md:p-6 max-w-2xl transition-colors duration-300">
-                <div class="space-y-4">
-                    <div class="relative">
-                        <svg class="absolute left-3 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                        </svg>
-                        <input type="text" id="fromLocation" placeholder="From (e.g., Howrah Station)" 
-                            class="w-full pl-11 pr-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:border-orange-500 focus:outline-none text-gray-800 dark:text-gray-200 dark:bg-gray-700 placeholder-gray-400 transition-colors duration-300">
-                    </div>
-                    
-                    <div class="relative">
-                        <svg class="absolute left-3 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                        </svg>
-                        <input type="text" id="toLocation" placeholder="To (e.g., Salt Lake)" 
-                            class="w-full pl-11 pr-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:border-orange-500 focus:outline-none text-gray-800 dark:text-gray-200 dark:bg-gray-700 placeholder-gray-400 transition-colors duration-300">
-                    </div>
-
-                    <button id="searchBtn" class="w-full bg-gradient-to-r from-amber-500 to-orange-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition-all flex items-center justify-center gap-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                        </svg>
-                        <span id="searchBtnText">Find Routes</span>
-                    </button>
-                </div>
-            </div>
+<main class="wrap">
+  <section class="hero">
+    <div class="hero-grid">
+      <div>
+        <div class="pill"><i></i><span data-i18n="eyebrow">450+ live routes across Kolkata</span></div>
+        <h1 data-i18n-html="h1">Find your auto <span class="hl">route</span> in seconds.</h1>
+        <p class="lede" data-i18n="lede">Fares, stops and timing for Kolkata's shared auto-rickshaw network — kept current by the commuters who actually ride it.</p>
+        <div class="hero-cta-row">
+          <button class="btn-solid" id="heroSearchBtn" data-i18n="findBtn">Find a route</button>
+          <a class="btn-ghost" href="tracking.html" data-i18n="trackBtn">Track live</a>
         </div>
+        <div class="mini-stats">
+          <div><b>450+</b><span data-i18n="statRoutes">Routes</span></div>
+          <div><b>28k+</b><span data-i18n="statUsers">Commuters</span></div>
+          <div><b>12</b><span data-i18n="statAreas">Areas</span></div>
+        </div>
+      </div>
+      <div class="search-card">
+        <div class="sc-head"><b data-i18n="planTitle">Plan your ride</b><span class="live"><i class="live-tag"></i><span data-i18n="live">● live</span></span></div>
+        <div class="field from"><span class="dot"></span><input id="fromLocation" data-i18n-ph="fromPh" placeholder="From — Howrah Station"></div>
+        <div class="field to"><span class="dot"></span><input id="toLocation" data-i18n-ph="toPh" placeholder="To — Salt Lake"></div>
+        <button class="go-btn" id="searchBtn" data-i18n="findBtn">Find routes</button>
+        <div class="board-rows" id="boardRows"></div>
+      </div>
     </div>
+  </section>
 
-    <!-- Stats Bar -->
-    <div class="bg-white dark:bg-gray-800 border-b dark:border-gray-700 transition-colors duration-300">
-        <div class="max-w-7xl mx-auto px-4 py-6">
-            <div class="grid grid-cols-3 gap-4 text-center">
-                <div>
-                    <div class="text-2xl font-bold text-orange-600">450+</div>
-                    <div id="stat1" class="text-sm text-gray-600 dark:text-gray-400">Routes</div>
-                </div>
-                <div>
-                    <div class="text-2xl font-bold text-orange-600">28k+</div>
-                    <div id="stat2" class="text-sm text-gray-600 dark:text-gray-400">Users</div>
-                </div>
-                <div>
-                    <div class="text-2xl font-bold text-orange-600">12</div>
-                    <div id="stat3" class="text-sm text-gray-600 dark:text-gray-400">Areas</div>
-                </div>
-            </div>
-        </div>
+  <div class="stats-strip">
+    <div class="row">
+      <div class="s"><b>450+</b><span data-i18n="statRoutes">Routes mapped</span></div>
+      <div class="s"><b>28k+</b><span data-i18n="statUsers">Commuters</span></div>
+      <div class="s"><b>12</b><span data-i18n="statAreas">Areas covered</span></div>
     </div>
+  </div>
 
-    <!-- Main Content -->
-    <div class="max-w-7xl mx-auto px-4 py-8">
-        <!-- Popular Stops -->
-        <div class="mb-8">
-            <h2 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-4 flex items-center gap-2">
-                <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
-                </svg>
-                <span id="popularStopsTitle">Popular Stops</span>
-            </h2>
-            <div id="popularStops" class="grid grid-cols-2 md:grid-cols-4 gap-3"></div>
-        </div>
+  <section class="section">
+    <div class="sec-head"><h2 data-i18n="popular">Popular stops</h2></div>
+    <div class="stops" id="stopsList"></div>
+  </section>
 
-        <!-- Available Routes -->
-        <div id="routes">
-            <h2 id="availableRoutesTitle" class="text-2xl md:text-3xl font-black text-gray-800 dark:text-gray-200 mb-6 flex items-center gap-3">
-                <div class="w-2 h-8 bg-gradient-to-b from-amber-500 to-orange-600 rounded-full"></div>
-                <span>Available RickTrix Routes</span>
-                <span class="ml-auto text-sm font-normal text-gray-500 dark:text-gray-400 animate-pulse">🔴 Live</span>
-            </h2>
-            <div id="routesList" class="grid gap-6"></div>
-        </div>
-
-        <!-- CTA Section -->
-        <div class="mt-12 bg-gradient-to-r from-amber-500 to-orange-600 rounded-2xl p-8 text-center text-white">
-            <h2 id="ctaTitle" class="text-2xl font-bold mb-3">Help Build the Community</h2>
-            <p id="ctaSubtitle" class="mb-6 text-amber-50">Know a route that's not listed? Submit it and help others!</p>
-            <button id="ctaButton" class="bg-white text-orange-600 px-8 py-3 rounded-xl font-semibold hover:shadow-lg transition-all">
-                Submit a Route
-            </button>
-        </div>
+  <section class="section" id="routes">
+    <div class="sec-head">
+      <h2 data-i18n="available">Available routes</h2>
+      <div class="live-tag"><i></i><span data-i18n="updated">updated moments ago</span></div>
     </div>
+    <div class="routes-grid" id="routesList"></div>
+  </section>
 
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-gray-400 mt-16">
-        <div class="max-w-7xl mx-auto px-4 py-8 text-center">
-            <div class="flex items-center justify-center gap-2 mb-4">
-                <div class="relative w-10 h-10">
-                    <div class="absolute inset-0 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl transform rotate-12"></div>
-                    <div class="absolute inset-0 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center">
-                        <svg viewBox="0 0 24 24" class="w-6 h-6 text-white" fill="currentColor">
-                            <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/>
-                        </svg>
-                    </div>
-                </div>
-                <div class="flex flex-col">
-                    <span class="text-xl font-bold bg-gradient-to-r from-amber-500 to-orange-600 bg-clip-text text-transparent">AutoRoute</span>
-                    <span class="text-xs text-gray-500 -mt-1">Smart Travel</span>
-                </div>
-            </div>
-            <p id="footerText" class="mt-4 text-sm">Making auto travel easier, one route at a time.</p>
-            <div id="copyright" class="mt-4 text-xs">© 2025 AutoRoute. Built with ❤️ for commuters.</div>
-        </div>
-    </footer>
+  <div class="cta">
+    <h2 data-i18n="ctaH">Know a route that isn't listed?</h2>
+    <p data-i18n="ctaP">Submit it and the fare — help the next commuter avoid the guesswork.</p>
+    <button id="ctaBtn" data-i18n="ctaBtn">Submit a route</button>
+  </div>
+</main>
 
-    <!-- Load scripts in correct order -->
-    <script src="translations.js"></script>
-    <script src="data.js"></script>
-    <script src="navigation.js"></script>
-    <script src="autocomplete.js"></script>
-    <script src="app.js"></script>
-    
-    <!-- Inline initialization to ensure routes display with translations -->
-    <script>
-        // Sample routes data
-        const sampleRoutes = [
-            {
-                from: 'Ahiritola Launch Ghat',
-                to: 'Beadon Street A.P.C. Road Crossing',
-                fare: '₹40',
-                vehicles: 70,
-                middleStops: ['Beadon Street']
-            },
-            {
-                from: 'Ahiritola Launch Ghat',
-                to: 'Ultadanga Station',
-                fare: '₹150',
-                vehicles: 195,
-                middleStops: ['Ahiritola St.', 'B.K. Pal Avenue', 'Aurobindo Setu']
-            },
-            {
-                from: 'Ballygunge Station',
-                to: 'Hazra More',
-                fare: '₹30',
-                vehicles: 45,
-                middleStops: []
-            },
-            {
-                from: 'Esplanade Bus Stand',
-                to: 'Howrah Station',
-                fare: '₹175',
-                vehicles: 300,
-                middleStops: ['Strand Road', 'Howrah Bridge']
-            },
-            {
-                from: 'Garia',
-                to: 'Howrah Station',
-                fare: '₹100',
-                vehicles: 523,
-                middleStops: []
-            },
-            {
-                from: 'Dum Dum Station',
-                to: 'Shyambazar',
-                fare: '₹150',
-                vehicles: 200,
-                middleStops: ['Dum Dum Road', 'B.T. Road']
-            }
-        ];
+<footer>
+  <div class="fbrand"><div class="badge" style="width:26px;height:26px;border-radius:8px;"><svg viewBox="0 0 24 24" width="14" height="14" fill="#fff"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg></div>RICKTRIX</div>
+  <span data-i18n="footer">Making auto travel predictable, one route at a time.</span><br>© 2026 RICKTRIX.
+</footer>
 
-        // Popular stops data
-        const popularStopsData = [
-            'Howrah Station',
-            'Salt Lake',
-            'Park Circus',
-            'Sealdah'
-        ];
+<div class="modal" id="submitModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeSubmitModal()">✕</button>
+    <h2>Submit a route</h2>
+    <p class="sub">Know a route that isn't listed? Add it and we'll get it verified by the community.</p>
+    <form onsubmit="handleSubmitRoute(event)">
+      <div class="mfield"><label>From</label><input required placeholder="e.g. Ballygunge"></div>
+      <div class="mfield"><label>To</label><input required placeholder="e.g. New Alipore"></div>
+      <div class="mfield"><label>Approximate fare (₹)</label><input type="number" min="1" required placeholder="e.g. 35"></div>
+      <button class="btn-solid" style="width:100%; margin-top:6px;" type="submit">Submit route</button>
+    </form>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
 
-        // Display routes
-        function displayRoutes() {
-            const routesList = document.getElementById('routesList');
-            if (!routesList) return;
-            
-            routesList.innerHTML = sampleRoutes.map((route, index) => `
-                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 hover:shadow-2xl transition-all hover:scale-[1.01] border border-gray-100 dark:border-gray-700">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="flex-1">
-                            <h3 class="text-xl font-bold text-gray-800 dark:text-gray-200 mb-2 leading-tight">
-                                ${route.from} <span class="text-orange-500">→</span> ${route.to}
-                            </h3>
-                            ${route.middleStops && route.middleStops.length > 0 ? `
-                                <div class="flex flex-wrap gap-2 mt-3">
-                                    ${route.middleStops.map(stop => `
-                                        <span class="text-xs bg-orange-50 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 px-3 py-1 rounded-full font-medium border border-orange-200 dark:border-orange-700">
-                                            ${stop}
-                                        </span>
-                                    `).join('')}
-                                </div>
-                            ` : ''}
-                        </div>
-                        <div class="ml-4">
-                            <div class="bg-gradient-to-br from-orange-500 to-orange-600 text-white px-4 py-2 rounded-xl text-center shadow-lg">
-                                <div class="text-xs font-semibold opacity-90">${typeof t === 'function' ? t('fare') : 'Fare'}</div>
-                                <div class="text-lg font-black">${route.fare}</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-700">
-                        <div class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
-                            <svg class="w-5 h-5 text-orange-500" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/>
-                            </svg>
-                            <span class="font-semibold">${route.vehicles} RickTrix</span>
-                        </div>
-                        <button onclick="viewRouteDetails(${index})" class="bg-orange-50 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 px-5 py-2 rounded-xl font-bold text-sm hover:bg-orange-100 dark:hover:bg-orange-900/50 transition-all flex items-center gap-2 border border-orange-200 dark:border-orange-700">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
-                            </svg>
-                            ${typeof t === 'function' ? t('viewDetails') : 'View Details'}
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        }
+<script src="autofare.js"></script>
+<script src="data.js"></script>
+<script src="autocomplete.js"></script>
+<script>
+const routes = autorouteRoutes;
+const stops = popularStops.map(stop => stop.name);
+const RICK_ICON = (color)=>`<svg viewBox="0 0 24 24" width="20" height="20" fill="${color||'var(--orange)'}"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>`;
 
-        // Display popular stops
-        function displayPopularStops() {
-            const popularStops = document.getElementById('popularStops');
-            if (!popularStops) return;
-            
-            popularStops.innerHTML = popularStopsData.map(stop => `
-                <button class="bg-orange-50 dark:bg-orange-900 hover:bg-orange-100 dark:hover:bg-orange-800 text-orange-700 dark:text-orange-200 px-4 py-3 rounded-xl font-semibold transition-colors flex items-center gap-2 border border-orange-200 dark:border-orange-700">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                    </svg>
-                    ${stop}
-                </button>
-            `).join('');
-        }
+document.getElementById('stopsList').innerHTML = stops.map(s=>`
+  <button class="stop-chip" onclick="document.getElementById('fromLocation').value='${s}'">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.7 16.7L13.4 21a2 2 0 01-2.8 0L6.4 16.7a8 8 0 1111.3 0z"/></svg>${s}
+  </button>`).join('');
 
-        // View route details
-        function viewRouteDetails(index) {
-            const route = sampleRoutes[index];
-            alert(`Route Details:\n\nFrom: ${route.from}\nTo: ${route.to}\nFare: ${route.fare}\nAvailable RickTrix: ${route.vehicles}`);
-        }
+let saved = new Set();
+try{ saved = new Set(JSON.parse(localStorage.getItem('ricktrix-saved')||'[]')); }catch(e){}
+function toggleSave(id, btn){
+  if(saved.has(id)){ saved.delete(id); btn.classList.remove('saved'); btn.querySelector('svg').setAttribute('fill','none'); showToast('Removed from saved routes'); }
+  else{ saved.add(id); btn.classList.add('saved'); btn.querySelector('svg').setAttribute('fill','currentColor'); showToast('Saved — see it on your Saved Routes page'); }
+  try{ localStorage.setItem('ricktrix-saved', JSON.stringify([...saved])); }catch(e){}
+}
+function showToast(msg){
+  const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(window.__toastTimer); window.__toastTimer = setTimeout(()=> t.classList.remove('show'), 2600);
+}
+function openSubmitModal(){ document.getElementById('submitModal').classList.add('open'); }
+function closeSubmitModal(){ document.getElementById('submitModal').classList.remove('open'); }
+function handleSubmitRoute(e){ e.preventDefault(); closeSubmitModal(); e.target.reset(); showToast('Thanks! Your route will be reviewed by the community.'); }
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeSubmitModal(); });
 
-        // Initialize immediately
-        function initializeApp() {
-            displayRoutes();
-            displayPopularStops();
-        }
+let visibleRoutes = routes;
+function renderRoutes(routeList=routes){
+  visibleRoutes = routeList;
+  document.getElementById('routesList').innerHTML = routeList.map((r,i)=>{
+  const id = r.from+'|'+r.to, isSaved = saved.has(id);
+  return `
+  <div class="rcard">
+    <div class="rcard-top">
+      <div class="rcard-ic">${RICK_ICON()}</div>
+      <div class="rcard-actions">
+        <div class="rcard-fare"><div class="lbl">Fare</div><div class="amt">₹${r.fare}</div></div>
+        <button class="save-btn ${isSaved?'saved':''}" onclick="toggleSave('${id.replace(/'/g,"\\'")}', this)" title="Save route">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="${isSaved?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><path d="M11 3.1c.3-.9 1.6-.9 1.9 0l1.5 4.7a1 1 0 00.95.7h4.9c1 0 1.4 1.24.6 1.8l-4 2.9a1 1 0 00-.36 1.1l1.5 4.7c.3.9-.75 1.7-1.54 1.1l-4-2.9a1 1 0 00-1.18 0l-4 2.9c-.78.6-1.83-.2-1.53-1.1l1.5-4.7a1 1 0 00-.36-1.1l-4-2.9c-.78-.56-.38-1.8.6-1.8h4.9a1 1 0 00.96-.7z"/></svg>
+        </button>
+      </div>
+    </div>
+    <h3>${r.from}<span class="arrow">→</span>${r.to}</h3>
+    ${r.via.length?`<div class="via-row">${r.via.map(v=>`<span class="via">${v}</span>`).join('')}</div>`:''}
+    <div class="rcard-foot"><span class="direct">${r.via.length? r.via.length+' stops via' : 'Direct route'}</span><button class="view-btn" onclick="viewRoute(${i})">Details</button></div>
+  </div>`;
+  }).join('');
+}
+renderRoutes(routes.slice(0, 5));
+function viewRoute(i){ const r=visibleRoutes[i]; showToast(`${r.from} → ${r.to} · ₹${r.fare} · ${r.via.join(', ')||'Direct'}`); }
 
-        // Run when DOM is ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', function() {
-                setTimeout(initializeApp, 100);
-            });
-        } else {
-            initializeApp();
-        }
-    </script>
+document.getElementById('boardRows').innerHTML = routes.slice(0,3).map(r=>`
+  <div class="board-row"><div class="r-ic">${RICK_ICON('var(--orange)').replace('width="20" height="20"','width="14" height="14"')}</div><div class="r-route">${r.from} → ${r.to}</div><div class="r-fare">₹${r.fare}</div></div>
+`).join('');
+
+function scrollToRoutes(){ document.getElementById('routes').scrollIntoView({behavior:'smooth'}); }
+function searchRoutes(){
+  const from = document.getElementById('fromLocation').value.trim().toLowerCase();
+  const to = document.getElementById('toLocation').value.trim().toLowerCase();
+  const matchingRoutes = routes.filter(route=>{
+    const routeFrom = route.from.toLowerCase();
+    const routeTo = route.to.toLowerCase();
+    if(from && to) return (routeFrom.includes(from) && routeTo.includes(to)) || (routeFrom.includes(to) && routeTo.includes(from));
+    if(from) return routeFrom.includes(from) || routeTo.includes(from);
+    if(to) return routeFrom.includes(to) || routeTo.includes(to);
+    return true;
+  });
+  renderRoutes(matchingRoutes.slice(0, 5));
+  scrollToRoutes();
+}
+document.getElementById('searchBtn').addEventListener('click', searchRoutes);
+document.getElementById('heroSearchBtn').addEventListener('click', scrollToRoutes);
+document.getElementById('ctaBtn').addEventListener('click', openSubmitModal);
+
+/* mobile drawer */
+const drawer = document.getElementById('drawer');
+document.getElementById('drawerBtn').addEventListener('click', ()=> drawer.classList.add('open'));
+document.getElementById('drawerClose').addEventListener('click', ()=> drawer.classList.remove('open'));
+document.getElementById('drawerBackdrop').addEventListener('click', ()=> drawer.classList.remove('open'));
+
+/* language dropdown */
+const langBtn = document.getElementById('langBtn'), langMenu = document.getElementById('langMenu');
+langBtn.addEventListener('click', (e)=>{ e.stopPropagation(); langMenu.classList.toggle('open'); });
+document.addEventListener('click', ()=> langMenu.classList.remove('open'));
+
+/* theme */
+function syncThemeIcon(){
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  document.getElementById('sunIcon').style.display = isDark ? 'none' : '';
+  document.getElementById('moonIcon').style.display = isDark ? '' : 'none';
+}
+syncThemeIcon();
+document.getElementById('themeToggle').addEventListener('click', ()=>{
+  const cur = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', cur);
+  try{ localStorage.setItem('ricktrix-theme', cur); }catch(e){}
+  syncThemeIcon();
+});
+
+/* language */
+const i18n = {
+  en:{navHome:'Home', navRoutes:'Routes', navTracking:'Tracking', navCommunity:'Community', navAbout:'About',
+    eyebrow:'450+ live routes across Kolkata', h1:'Find your auto <span class="hl">route</span> in seconds.',
+    lede:"Fares, stops and timing for Kolkata's shared auto-rickshaw network — kept current by the commuters who actually ride it.",
+    findBtn:'Find a route', trackBtn:'Track live', planTitle:'Plan your ride', live:'● live',
+    fromPh:'From — Howrah Station', toPh:'To — Salt Lake',
+    statRoutes:'Routes', statUsers:'Commuters', statAreas:'Areas', popular:'Popular stops',
+    available:'Available routes', updated:'updated moments ago', ctaH:"Know a route that isn't listed?",
+    ctaP:'Submit it and the fare — help the next commuter avoid the guesswork.', ctaBtn:'Submit a route',
+    footer:'Making auto travel predictable, one route at a time.'},
+  bn:{navHome:'হোম', navRoutes:'রুট', navTracking:'ট্র্যাকিং', navCommunity:'কমিউনিটি', navAbout:'সম্পর্কে',
+    eyebrow:'কলকাতা জুড়ে ৪৫০+ লাইভ রুট', h1:'সেকেন্ডে আপনার অটো <span class="hl">রুট</span> খুঁজুন।',
+    lede:'কলকাতার শেয়ার-অটো নেটওয়ার্কের ভাড়া, স্টপ ও সময় — যাত্রীদের দেওয়া হালনাগাদ তথ্য।',
+    findBtn:'রুট খুঁজুন', trackBtn:'লাইভ ট্র্যাক', planTitle:'যাত্রা পরিকল্পনা', live:'● লাইভ',
+    fromPh:'থেকে — হাওড়া স্টেশন', toPh:'পর্যন্ত — সল্ট লেক',
+    statRoutes:'রুট', statUsers:'যাত্রী', statAreas:'এলাকা', popular:'জনপ্রিয় স্টপ',
+    available:'উপলব্ধ রুট', updated:'এইমাত্র হালনাগাদ', ctaH:'কোনো রুট তালিকায় নেই?',
+    ctaP:'রুট ও ভাড়া জমা দিন — পরবর্তী যাত্রীকে সাহায্য করুন।', ctaBtn:'রুট জমা দিন',
+    footer:'প্রতিটি রুটে অটো ভ্রমণ সহজ করে তোলা।'},
+  hi:{navHome:'होम', navRoutes:'रूट', navTracking:'ट्रैकिंग', navCommunity:'समुदाय', navAbout:'हमारे बारे में',
+    eyebrow:'कोलकाता भर में 450+ लाइव रूट', h1:'सेकंडों में अपना ऑटो <span class="hl">रूट</span> खोजें।',
+    lede:'कोलकाता के शेयर-ऑटो नेटवर्क का किराया, स्टॉप और समय — यात्रियों द्वारा अपडेट किया गया।',
+    findBtn:'रूट खोजें', trackBtn:'लाइव ट्रैक', planTitle:'यात्रा योजना', live:'● लाइव',
+    fromPh:'से — हावड़ा स्टेशन', toPh:'तक — साल्ट लेक',
+    statRoutes:'रूट', statUsers:'यात्री', statAreas:'क्षेत्र', popular:'लोकप्रिय स्टॉप',
+    available:'उपलब्ध रूट', updated:'अभी अपडेट हुआ', ctaH:'कोई रूट सूची में नहीं है?',
+    ctaP:'रूट और किराया जमा करें — अगले यात्री की मदद करें।', ctaBtn:'रूट जमा करें',
+    footer:'हर रूट के साथ ऑटो यात्रा आसान बनाना।'}
+};
+function applyLang(lang){
+  const dict = i18n[lang] || i18n.en;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{ const k = el.getAttribute('data-i18n'); if(dict[k]) el.textContent = dict[k]; });
+  document.querySelectorAll('[data-i18n-html]').forEach(el=>{ const k = el.getAttribute('data-i18n-html'); if(dict[k]) el.innerHTML = dict[k]; });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el=>{ const k = el.getAttribute('data-i18n-ph'); if(dict[k]) el.setAttribute('placeholder', dict[k]); });
+  document.body.style.fontFamily = lang==='bn' ? "'Noto Sans Bengali','Work Sans',sans-serif" : lang==='hi' ? "'Noto Sans Devanagari','Work Sans',sans-serif" : "'Work Sans',sans-serif";
+  document.getElementById('langLabel').textContent = lang.toUpperCase();
+  document.querySelectorAll('#langMenu button').forEach(b=> b.classList.toggle('active', b.dataset.lang===lang));
+  try{ localStorage.setItem('ricktrix-lang', lang); }catch(e){}
+}
+document.querySelectorAll('#langMenu button').forEach(b=> b.addEventListener('click', (e)=>{ e.stopPropagation(); applyLang(b.dataset.lang); langMenu.classList.remove('open'); }));
+try{ applyLang(localStorage.getItem('ricktrix-lang') || 'en'); }catch(e){ applyLang('en'); }
+</script>
 </body>
 </html>

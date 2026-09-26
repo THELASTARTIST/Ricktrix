@@ -1,18 +1,7 @@
-// Get the data from DATA.JSON
-let routeData = [];
-
-// Load the JSON data
-fetch('DATA.JSON')
-    .then(response => response.json())
-    .then(data => {
-        routeData = data;
-    })
-    .catch(error => console.error('Error loading route data:', error));
-
 // Function to get unique locations from the data
 function getAllLocations() {
     const locations = new Set();
-    routeData.forEach(route => {
+    autoFares.forEach(route => {
         locations.add(route.from);
         locations.add(route.to);
     });
@@ -42,11 +31,11 @@ function showSuggestions(inputElement, suggestions) {
     // Create suggestions list
     const suggestionList = document.createElement('div');
     suggestionList.id = `${inputElement.id}-suggestions`;
-    suggestionList.className = 'absolute z-50 w-full bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-xl mt-1 shadow-lg max-h-60 overflow-y-auto';
+    suggestionList.className = 'location-suggestions';
 
     suggestions.forEach(suggestion => {
         const item = document.createElement('div');
-        item.className = 'px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer text-gray-800 dark:text-gray-200';
+        item.className = 'location-suggestion';
         item.textContent = suggestion;
         item.onclick = () => {
             inputElement.value = suggestion;

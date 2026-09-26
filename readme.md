@@ -82,22 +82,25 @@ Then open `http://localhost:8000` in your browser.
 ## 📁 Project Structure
 
 ```
-autoroute/
-├── index.html          # 🏠 Main application UI
-├── styles.css          # 🎨 Custom styling
-├── data.js             # 📊 Route database
-├── app.js              # ⚙️ Application logic
-└── README.md           # 📖 Documentation
+AUTO ROUTE/
+├── index.html       # Main route finder and entry page
+├── all_routes.html  # Searchable/filterable route directory
+├── saved_routes.html # Routes bookmarked on this device
+├── tracking.html    # Live tracking demo
+├── community.html   # Community demo
+├── about.html       # About page and charts
+├── autofare.js      # Shared fare records and tariff reference
+├── data.js          # Maps fare records to route finder data
+├── autocomplete.js  # Location suggestions from fare records
+├── style.css        # Shared styles and responsive page navigation
+├── app.js           # Legacy controller; not loaded by the current pages
+├── navigation.js    # Legacy navigation/theme controller
+├── translations.js  # Legacy translation module
+├── setup.txt        # Setup notes
+└── readme.md        # Project documentation
 ```
 
-**File Overview:**
-
-| File | Purpose | Size |
-|------|---------|------|
-| `index.html` | Application structure and layout | ~12KB |
-| `styles.css` | Custom styles and animations | ~2KB |
-| `data.js` | Route data and popular stops | ~4KB |
-| `app.js` | Search logic and interactions | ~6KB |
+`index.html`, `all_routes.html`, and `saved_routes.html` load `autofare.js` followed by `data.js`, so route cards, directory filters, autocomplete, and saved-route fare details use the same records. Home and the route directory share bookmarks through the `ricktrix-saved` local-storage key. All six HTML pages link across the site and load `style.css`. The three legacy JavaScript files are retained but not loaded because their expected page IDs and data model do not match the current pages.
 
 ---
 

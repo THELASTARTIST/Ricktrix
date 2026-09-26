@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>All routes — RICKTRIX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script>
+try{ var t = localStorage.getItem('ricktrix-theme') || ((window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light'); document.documentElement.setAttribute('data-theme', t); }catch(e){}
+</script>
+<style>
+:root{ --ink:#16130F; --paper:#F7F2E1; --paper-2:#ECE4CC; --paper-3:#DED3AE; --yellow:#FFC22E; --green:#1F9D63; --rust:#C1442D; --line: rgba(22,19,15,.14); --ink-60: rgba(22,19,15,.6); }
+:root[data-theme="dark"]{ --ink:#F5EFDD; --paper:#0F0D0A; --paper-2:#1C1712; --paper-3:#26201A; --yellow:#FFCB4D; --green:#2FBE7A; --rust:#E2604A; --line: rgba(245,239,221,.12); --ink-60: rgba(245,239,221,.6); }
+*{box-sizing:border-box;}
+body{margin:0; background:var(--paper); color:var(--ink); font-family:'Work Sans',sans-serif; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);}
+h1,h2{font-family:'Space Grotesk',sans-serif;}
+a{color:inherit; text-decoration:none;}
+.wrap{max-width:1080px; margin:0 auto; padding:0 20px;}
+header{position:sticky; top:env(safe-area-inset-top,0px); z-index:50; background:var(--paper); border-bottom:1px solid var(--line);}
+.headbar{display:flex; align-items:center; justify-content:space-between; padding:16px 20px; max-width:1080px; margin:0 auto;}
+.brand{display:flex; align-items:center; gap:10px;}
+.badge{width:36px; height:36px; border-radius:50%; background:var(--yellow); border:2px solid var(--ink); display:flex; align-items:center; justify-content:center;}
+.brand-name{font-family:'Space Grotesk'; font-weight:700; font-size:18px;}
+nav.pri{display:flex; gap:22px;}
+nav.pri a{font-size:14px; font-weight:500; color:var(--ink-60);}
+nav.pri a.active{color:var(--ink); font-weight:700;}
+@media(max-width:760px){nav.pri{display:none;}}
+.icon-btn{width:36px; height:36px; border-radius:50%; border:1px solid var(--line); background:none; color:var(--ink); display:flex; align-items:center; justify-content:center; cursor:pointer;}
+
+.pagehead{padding:36px 0 22px;}
+.pagehead h1{font-size:clamp(26px,3.6vw,36px); margin:0 0 8px;}
+.pagehead p{color:var(--ink-60); margin:0; font-size:15px;}
+
+.controls{position:sticky; top:69px; z-index:40; background:var(--paper); padding:14px 0; border-bottom:1px solid var(--line); margin-bottom:20px;}
+.search-row{display:flex; gap:10px; margin-bottom:12px;}
+.search-box{flex:1; position:relative;}
+.search-box svg{position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--ink-60);}
+.search-box input{width:100%; padding:13px 13px 13px 40px; border:1.5px solid var(--line); border-radius:10px; background:var(--paper-2); color:var(--ink); font:inherit; font-size:14.5px;}
+.search-box input:focus{outline:none; border-color:var(--yellow);}
+select#sortSel{padding:0 14px; border:1.5px solid var(--line); border-radius:10px; background:var(--paper-2); color:var(--ink); font:inherit; font-size:13.5px; cursor:pointer;}
+.chips{display:flex; gap:8px; flex-wrap:wrap;}
+.chip{border:1px solid var(--line); background:var(--paper); color:var(--ink-60); border-radius:999px; padding:7px 14px; font-size:13px; cursor:pointer; font-weight:500;}
+.chip.active{background:var(--ink); color:var(--paper); border-color:var(--ink);}
+.count-row{display:flex; justify-content:space-between; align-items:center; font-size:13px; color:var(--ink-60); margin-bottom:14px;}
+
+.routes{display:grid; gap:14px;}
+.ticket{display:grid; grid-template-columns:52px 1fr auto; gap:16px; align-items:center; background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:16px 18px; position:relative;}
+.ticket:hover{border-color:var(--yellow);}
+.ticket::before,.ticket::after{content:""; position:absolute; width:14px; height:14px; background:var(--paper); border:1px solid var(--line); border-radius:50%; top:50%; transform:translateY(-50%);}
+.ticket::before{left:-8px;} .ticket::after{right:-8px;}
+.route-num{width:46px; height:46px; border-radius:50%; background:var(--paper-2); border:1.5px solid var(--line); display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+.route-info h3{margin:0 0 4px; font-size:15.5px; font-weight:600;}
+.route-info h3 .arrow{color:var(--rust); margin:0 6px;}
+.route-info .area{font-size:11.5px; color:var(--ink-60);}
+.via-row{display:flex; flex-wrap:wrap; gap:6px; margin-top:6px;}
+.via{font-size:10.5px; border:1px dashed var(--line); border-radius:999px; padding:2px 9px; color:var(--ink-60);}
+.right-col{display:flex; align-items:center; gap:10px;}
+.fare-box{text-align:right;}
+.fare-box .amt{font-family:'Space Grotesk'; font-weight:700; font-size:18px; color:var(--rust);}
+.save-btn{width:38px; height:38px; border-radius:50%; border:1px solid var(--line); background:var(--paper); color:var(--ink-60); display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;}
+.save-btn:hover{border-color:var(--yellow);}
+.save-btn.saved{background:var(--yellow); border-color:var(--yellow); color:var(--ink);}
+@media(max-width:600px){ .ticket{grid-template-columns:40px 1fr; grid-template-areas:"n i" "b b";} .right-col{grid-area:b; justify-content:space-between; margin-top:8px;} }
+
+.empty{text-align:center; padding:60px 20px; color:var(--ink-60);}
+footer{border-top:1px solid var(--line); padding:30px 20px; text-align:center; color:var(--ink-60); font-size:13px; margin-top:30px;}
+
+.toast{position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--ink); color:var(--paper); padding:13px 22px; border-radius:999px; font-size:13.5px; font-weight:600; opacity:0; pointer-events:none; transition:opacity .25s ease, transform .25s ease; z-index:100; white-space:nowrap;}
+.toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+<header>
+  <div class="headbar">
+    <a href="index.html" class="brand"><div class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="#16130F"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg></div><div class="brand-name">RICKTRIX</div></a>
+    <nav class="pri">
+      <a href="index.html">Home</a>
+      <a href="all_routes.html" class="active">Routes</a>
+      <a href="tracking.html">Live tracking</a>
+      <a href="community.html">Community</a>
+      <a href="about.html">About</a>
+      <a href="saved_routes.html">Saved</a>
+    </nav>
+    <div style="display:flex; gap:8px;">
+      <a class="icon-btn" href="saved_routes.html" title="Saved routes"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 3.1c.3-.9 1.6-.9 1.9 0l1.5 4.7a1 1 0 00.95.7h4.9c1 0 1.4 1.24.6 1.8l-4 2.9a1 1 0 00-.36 1.1l1.5 4.7c.3.9-.75 1.7-1.54 1.1l-4-2.9a1 1 0 00-1.18 0l-4 2.9c-.78.6-1.83-.2-1.53-1.1l1.5-4.7a1 1 0 00-.36-1.1l-4-2.9c-.78-.56-.38-1.8.6-1.8h4.9a1 1 0 00.96-.7z"/></svg></a>
+      <button class="icon-btn" id="themeToggle" aria-label="Toggle theme">
+        <svg id="sunIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.4 6.4l-.7-.7M6.3 6.3l-.7-.7m12.8 0l-.7.7M6.3 17.7l-.7.7M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+        <svg id="moonIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M20.4 15.4A9 9 0 018.6 3.6 9 9 0 0012 21a9 9 0 008.4-5.6z"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="pagehead">
+    <h1>All 450+ routes, in one place</h1>
+    <p>Search by stop, filter by area, sort by fare — every share-auto route Kolkata commuters have mapped so far.</p>
+  </div>
+
+  <div class="controls">
+    <div class="search-row">
+      <div class="search-box">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input id="searchInput" placeholder="Search by stop — e.g. Howrah, Salt Lake, Garia…">
+      </div>
+      <select id="sortSel">
+        <option value="default">Sort: Popular</option>
+        <option value="fareAsc">Fare: Low to high</option>
+        <option value="fareDesc">Fare: High to low</option>
+        <option value="az">A → Z</option>
+      </select>
+    </div>
+    <div class="chips" id="areaChips"></div>
+  </div>
+
+  <div class="count-row"><span id="countText">450 routes</span><span id="savedHint"></span></div>
+  <div class="routes" id="routesList"></div>
+  <div class="empty" id="emptyState" style="display:none;">No routes match that search. Try a different stop or clear the filter.</div>
+</main>
+
+<footer>RICKTRIX — making auto travel easier, one route at a time.<br>© 2026 RICKTRIX.</footer>
+<div class="toast" id="toast"></div>
+
+<script src="autofare.js"></script>
+<script src="data.js"></script>
+<script>
+const RICK_ICON = '<svg viewBox="0 0 24 24" width="20" height="20" fill="var(--rust)"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>';
+
+const areas = ['Howrah','Central Kolkata','Salt Lake / EM Bypass','South Kolkata','Behala','North Kolkata'];
+const routes = autorouteRoutes.map(route => ({...route, area: routeArea(route)}));
+function routeArea(route){
+  const stops = [route.from, route.to, ...route.via].join(' ').toLowerCase();
+  if(/howrah|ramrajatala|salkia/.test(stops)) return 'Howrah';
+  if(/salt ?lake|ultadanga|karunamoyee|kestopur|bypass/.test(stops)) return 'Salt Lake / EM Bypass';
+  if(/behala|kidderpore|metiabruz/.test(stops)) return 'Behala';
+  if(/garia|jadavpur|tollygunge|ballygunge|dhakuria|rashbehari/.test(stops)) return 'South Kolkata';
+  if(/shyambazar|dumdum|belgachia|bagbazar/.test(stops)) return 'North Kolkata';
+  return 'Central Kolkata';
+}
+let saved = new Set();
+try{ saved = new Set(JSON.parse(localStorage.getItem('ricktrix-saved')||'[]')); }catch(e){}
+function routeId(r){ return r.from+'|'+r.to; }
+
+function renderChips(){
+  const chips = ['All', ...areas];
+  document.getElementById('areaChips').innerHTML = chips.map((a,i)=> `<button class="chip ${i===0?'active':''}" data-area="${a}">${a}</button>`).join('');
+  document.querySelectorAll('.chip').forEach(c=> c.addEventListener('click', ()=>{
+    document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active')); c.classList.add('active'); render();
+  }));
+}
+renderChips();
+
+function currentFilters(){
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  const area = document.querySelector('.chip.active')?.dataset.area || 'All';
+  const sort = document.getElementById('sortSel').value;
+  return {q, area, sort};
+}
+
+function render(){
+  const {q, area, sort} = currentFilters();
+  let list = routes.filter(r=>{
+    const matchQ = !q || r.from.toLowerCase().includes(q) || r.to.toLowerCase().includes(q) || r.via.some(v=>v.toLowerCase().includes(q));
+    const matchArea = area==='All' || r.area===area;
+    return matchQ && matchArea;
+  });
+  if(sort==='fareAsc') list.sort((a,b)=>a.fare-b.fare);
+  if(sort==='fareDesc') list.sort((a,b)=>b.fare-a.fare);
+  if(sort==='az') list.sort((a,b)=>a.from.localeCompare(b.from));
+
+  document.getElementById('countText').textContent = `${list.length} route${list.length!==1?'s':''} shown · ${routes.length} mapped in total`;
+  document.getElementById('emptyState').style.display = list.length ? 'none' : 'block';
+  document.getElementById('routesList').innerHTML = list.map(r=>{
+    const id = routeId(r), isSaved = saved.has(id);
+    return `
+    <div class="ticket">
+      <div class="route-num">${RICK_ICON}</div>
+      <div class="route-info">
+        <h3>${r.from}<span class="arrow">→</span>${r.to}</h3>
+        <div class="area">${r.area}</div>
+        ${r.via.length?`<div class="via-row">${r.via.map(v=>`<span class="via">${v}</span>`).join('')}</div>`:''}
+      </div>
+      <div class="right-col">
+        <div class="fare-box"><div class="amt">₹${r.fare}</div></div>
+        <button class="save-btn ${isSaved?'saved':''}" onclick="toggleSave('${id.replace(/'/g,"\\'")}', this)" title="Save route">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="${isSaved?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><path d="M11 3.1c.3-.9 1.6-.9 1.9 0l1.5 4.7a1 1 0 00.95.7h4.9c1 0 1.4 1.24.6 1.8l-4 2.9a1 1 0 00-.36 1.1l1.5 4.7c.3.9-.75 1.7-1.54 1.1l-4-2.9a1 1 0 00-1.18 0l-4 2.9c-.78.6-1.83-.2-1.53-1.1l1.5-4.7a1 1 0 00-.36-1.1l-4-2.9c-.78-.56-.38-1.8.6-1.8h4.9a1 1 0 00.96-.7z"/></svg>
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+render();
+
+function toggleSave(id, btn){
+  if(saved.has(id)){ saved.delete(id); btn.classList.remove('saved'); btn.querySelector('svg').setAttribute('fill','none'); showToast('Removed from saved routes'); }
+  else{ saved.add(id); btn.classList.add('saved'); btn.querySelector('svg').setAttribute('fill','currentColor'); showToast('Saved — find it on your Saved Routes page'); }
+  try{ localStorage.setItem('ricktrix-saved', JSON.stringify([...saved])); }catch(e){}
+}
+function showToast(msg){
+  const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(window.__toastTimer); window.__toastTimer = setTimeout(()=> t.classList.remove('show'), 2200);
+}
+
+document.getElementById('searchInput').addEventListener('input', render);
+document.getElementById('sortSel').addEventListener('change', render);
+
+function syncThemeIcon(){
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  document.getElementById('sunIcon').style.display = isDark ? 'none' : '';
+  document.getElementById('moonIcon').style.display = isDark ? '' : 'none';
+}
+syncThemeIcon();
+document.getElementById('themeToggle').addEventListener('click', ()=>{
+  const cur = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', cur);
+  try{ localStorage.setItem('ricktrix-theme', cur); }catch(e){}
+  syncThemeIcon();
+});
+</script>
+</body>
+</html>
