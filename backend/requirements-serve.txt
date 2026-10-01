@@ -1,0 +1,20 @@
+# RICKTRIX backend -- serving only.
+#
+# This is what the Docker image installs. It deliberately omits TensorFlow:
+# app/predict.py runs the model from the .npz that ml.export writes, so the
+# server never imports tensorflow. That is the difference between a ~150 MB
+# image that cold-starts in milliseconds and a ~1.2 GB one that takes a minute
+# to import, and it is why the free tier of most hosts is enough.
+#
+# TensorFlow lives in requirements.txt, which is what you install to *train*.
+# Both can be installed in the same virtualenv without conflict.
+
+fastapi>=0.115,<1.0
+uvicorn[standard]>=0.30
+pydantic>=2.7,<3.0
+supabase>=2.7,<3.0
+numpy>=1.26,<3.0
+
+# tests only
+pytest>=8.0
+httpx>=0.27

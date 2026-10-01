@@ -39,9 +39,9 @@ AutoRoute solves a common problem for Kolkata commuters: finding reliable inform
 ⏱️ **Travel Time** - Accurate time estimates for journey planning  
 📍 **Popular Stops** - Quick access to major transit hubs  
 ⭐ **User Ratings** - Community-verified route reliability  
-📱 **Mobile Optimized** - Seamless experience on all devices  
-🚀 **Lightning Fast** - Under 50KB total size  
-🔌 **Offline Ready** - Works without internet after first load  
+📱 **Installable** - Add to the home screen and launch full-screen  
+🚀 **Lightning Fast** - No build step, no bundler, no framework  
+🔌 **Genuinely Offline** - Route search works in aeroplane mode  
 
 ---
 
@@ -77,6 +77,31 @@ php -S localhost:8000
 
 Then open `http://localhost:8000` in your browser.
 
+**Option 3: With the backend (recommended)**
+
+```bash
+cd backend
+run.bat
+```
+
+This serves the API and the site from one process on one port, so the same
+`http://localhost:8000` works, and a phone on the same Wi-Fi can reach it. See
+[backend/README.md](backend/README.md).
+
+### Install it on your phone
+
+RICKTRIX is a Progressive Web App — it installs to the home screen, launches
+full-screen, and keeps working with no network.
+
+1. Start the server (`backend\run.bat`).
+2. Open the printed `http://<LAN-IP>:8000` address on the phone.
+3. **Android:** tap the download icon in the header.
+   **iPhone:** Share → **Add to Home Screen**.
+
+To install from outside your Wi-Fi you need an HTTPS address, because browsers
+only allow installation and geolocation on secure origins. Deploy it (see
+[backend/README.md](backend/README.md#deploying-it)) or use a tunnel.
+
 ---
 
 ## 📁 Project Structure
@@ -89,10 +114,17 @@ AUTO ROUTE/
 ├── tracking.html    # Live tracking demo
 ├── community.html   # Community demo
 ├── about.html       # About page and charts
-├── autofare.js      # Shared fare records and tariff reference
+├── offline.html     # Shown when a page opens with no connection
+├── autofare.js      # Fare records, bus stops and the official tariff
 ├── data.js          # Maps fare records to route finder data
 ├── autocomplete.js  # Location suggestions from fare records
+├── api.js           # Optional backend client; falls back to the local arrays
+├── pwa.js           # Service worker registration and the install button
+├── sw.js            # Precaches the app so it works with no network
+├── manifest.webmanifest # Name, icons, colours, home-screen shortcuts
+├── assets/          # App icons, generated from the SVGs
 ├── style.css        # Shared styles and responsive page navigation
+├── backend/         # FastAPI service - see backend/README.md
 ├── app.js           # Legacy controller; not loaded by the current pages
 ├── navigation.js    # Legacy navigation/theme controller
 ├── translations.js  # Legacy translation module
@@ -100,7 +132,9 @@ AUTO ROUTE/
 └── readme.md        # Project documentation
 ```
 
-`index.html`, `all_routes.html`, and `saved_routes.html` load `autofare.js` followed by `data.js`, so route cards, directory filters, autocomplete, and saved-route fare details use the same records. Home and the route directory share bookmarks through the `ricktrix-saved` local-storage key. All six HTML pages link across the site and load `style.css`. The three legacy JavaScript files are retained but not loaded because their expected page IDs and data model do not match the current pages.
+`index.html`, `all_routes.html`, and `saved_routes.html` load `autofare.js` followed by `data.js`, so route cards, directory filters, autocomplete, and saved-route fare details use the same records. Home and the route directory share bookmarks through the `ricktrix-saved` local-storage key. All six HTML pages link across the site, load `style.css`, and load `pwa.js`. The three legacy JavaScript files are retained but not loaded because their expected page IDs and data model do not match the current pages.
+
+`autofare.js` is the single source of truth. The backend parses it directly rather than keeping a second copy, so the API and the site cannot drift apart.
 
 ---
 
@@ -128,55 +162,63 @@ AUTO ROUTE/
 
 ## 📝 Adding Routes
 
-Edit `data.js` and add new route objects to the `routes` array:
+Routes live in the `autoFares` array in **`autofare.js`** — that file is the
+single source of truth, and `data.js`, the backend, and the ML training set all
+read from it. Add your record there:
 
 ```javascript
 {
-    id: 10,
-    name: 'Jadavpur ↔ Park Circus',
+    id: 138,
     from: 'Jadavpur',
     to: 'Park Circus',
-    fare: '12-16',
-    time: '25-30',
-    distance: '9.2',
-    type: 'Shared',
-    stops: 7,
-    frequency: 'Every 4 min',
-    rating: 4.4,
-    users: 312
+    via: ['Rashbehari', 'Panjab'],
+    fareINR: 20,
+    fareSource: 'user-reported',
+    fromMatchedBusStop: 'Jadavpur',
+    toMatchedBusStop: 'Park Circus',
+    flag: ''
 }
 ```
 
-**Route Properties:**
+**Route properties:**
 
 - `id` - Unique identifier
-- `name` - Display name with arrow (↔)
-- `from` / `to` - Start and end locations
-- `fare` - Price range in rupees
-- `time` - Duration in minutes
-- `distance` - Distance in kilometers
-- `type` - Route type (Shared/Direct)
-- `stops` - Number of stops
-- `frequency` - How often autos run
-- `rating` - User rating (0-5)
-- `users` - Number of users who rated
+- `from` / `to` - Start and end stops
+- `via` - Intermediate stops, as an array
+- `fareINR` - Fare in rupees (a number, not a range)
+- `fareSource` - Where the number came from, e.g. `user-reported`
+- `fromMatchedBusStop` / `toMatchedBusStop` - Cross-reference into `busRouteStops`
+- `flag` - Optional marker, e.g. for a fare you could not verify
+
+Two things to know. Records with `from` or `to` set to `"Not Specified"` are
+hidden by `data.js`, so an incomplete route is stored but not shown. And these
+fares are user-provided and unverified — the honesty note at the top of
+`autofare.js` says so, and the app does not claim otherwise.
 
 ---
 
 ## 🛠️ Technology Stack
 
+**Frontend**
+
 - **HTML5** - Semantic structure
 - **CSS3** - Styling and animations
 - **JavaScript (ES6+)** - Application logic
-- **Tailwind CSS** - Utility-first styling (CDN)
+- **Service Worker + Web App Manifest** - Offline support and installation
+
+**Backend** (optional, in `backend/`)
+
+- **Python / FastAPI** - Route, stop and fare endpoints
+- **TensorFlow + Keras** - Trains a fare estimator (used with a ridge baseline)
+- **Supabase** - Optional Postgres for submissions and cross-device bookmarks
 
 **Why These Technologies?**
 
-✅ No build process required  
+✅ No build process or bundler on the frontend  
 ✅ Works in any modern browser  
-✅ Fast and lightweight  
+✅ Frontend is fully functional with no backend at all  
 ✅ Easy to customize  
-✅ Simple deployment  
+✅ Deploys as a single container  
 
 ---
 
@@ -188,22 +230,24 @@ Edit `data.js` and add new route objects to the `routes` array:
 - Route information display
 - Mobile responsive design
 - Popular stops feature
+- Installable PWA with offline support
+- FastAPI backend: routes, stops, fares, submissions, bookmarks
+- Fare estimator trained and cross-validated against a linear baseline
 
 ### 🔄 Phase 2 - In Progress
 
+- [ ] Public HTTPS deployment
 - [ ] Real-time GPS tracking
-- [ ] User route submissions
-- [ ] Favorite routes
+- [ ] User route submissions reaching the moderation queue
 - [ ] Social sharing
 - [ ] Route notifications
 
 ### 📅 Phase 3 - Planned
 
-- [ ] Backend API integration
 - [ ] User authentication
 - [ ] Interactive map view
 - [ ] Multi-language support (Bengali/Hindi)
-- [ ] Native mobile apps
+- [ ] Store listings (Play Store / App Store)
 
 ---
 

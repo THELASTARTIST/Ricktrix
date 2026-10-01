@@ -1,0 +1,15 @@
+# virtualenv
+.venv/
+
+# secrets
+.env
+
+# trained model artifacts -- rebuild with `python -m ml.train`
+ml/artifacts/
+
+# staged copy of the static site -- rebuild with `python -m scripts.build_site`
+public/
+
+__pycache__/
+*.py[cod]
+.pytest_cache/

@@ -1,0 +1,63 @@
+# RICKTRIX on Render -- the API and the PWA from one container, one URL.
+#
+# The reason this works as a single service: the FastAPI process serves both
+# /api/* and the staged static site from the same origin. A phone gets one
+# address, the service worker gets a same-origin cache, and there is no CORS
+# configuration anywhere.
+#
+# Deploy:
+#   1. push the repo to GitHub
+#   2. render.com -> New -> Blueprint -> pick the repo
+#   3. Render reads this file and builds it
+#
+# The model has to exist before the first deploy, or the build fails on
+# purpose. Train and export locally first:
+#
+#   cd backend
+#   python -m ml.train
+#   python -m ml.export
+#   python -m scripts.make_icons
+#
+# Then commit ml/artifacts/, assets/*.png and the rebuilt public/ -- or, more
+# simply, let .gitignore decide. Check backend/.gitignore: if it excludes
+# ml/artifacts, the build will fail until you force-add them, which is
+# deliberate but annoying on the first attempt.
+
+services:
+  - type: web
+    name: ricktrix
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    # The context is the repository root, because ml/data.py and
+    # scripts/build_site.py both read files above backend/.
+    dockerContext: .
+    plan: starter
+    region: singapore
+    # Free and starter instances sleep when idle. The first request after a
+    # cold start takes a few seconds, which is fine for a web service but
+    # would be felt by a phone on a patchy connection. A paid instance stays
+    # warm; on free, the service worker is what keeps the app usable offline.
+    healthCheckPath: /api/health
+    autoDeploy: true
+
+    envVars:
+      # Supabase is optional. Without it the API serves autofare.js directly,
+      # which is the same data the static site already has -- so the app works,
+      # it just cannot accept submissions or sync bookmarks.
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      # Set on the Render dashboard, never in this file. This key bypasses
+      # row-level security and must not be committed or sent to a browser.
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      # Comma-separated. Empty means nobody is an admin -- the API treats
+      # submissions as untrusted until someone claims them.
+      - key: ADMIN_EMAILS
+        sync: false
+      # CORS_ORIGINS is deliberately absent. Unset means same-origin only,
+      # which is correct here: this process serves both the API and the site.
+      # Set it to a comma-separated list of exact origins ("*" is rejected by
+      # browsers when combined with credentials) only if you later host the
+      # site somewhere else.

@@ -6,6 +6,13 @@
 <title>RICKTRIX — Find your share-auto route</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700;800&family=Work+Sans:wght@400;500;600&family=Noto+Sans+Bengali:wght@500;600&family=Noto+Sans+Devanagari:wght@500;600&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#FFC22E">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="RICKTRIX">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
 <script>
 try{
   var t = localStorage.getItem('ricktrix-theme') || ((window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light');
@@ -445,5 +452,6 @@ function applyLang(lang){
 document.querySelectorAll('#langMenu button').forEach(b=> b.addEventListener('click', (e)=>{ e.stopPropagation(); applyLang(b.dataset.lang); langMenu.classList.remove('open'); }));
 try{ applyLang(localStorage.getItem('ricktrix-lang') || 'en'); }catch(e){ applyLang('en'); }
 </script>
+<script src="pwa.js" defer></script>
 </body>
 </html>

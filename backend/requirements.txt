@@ -1,0 +1,18 @@
+# RICKTRIX backend
+#
+# TensorFlow needs Python 3.9-3.12. On 3.13 the install will fail to find a
+# wheel -- use 3.11 or 3.12. run.bat checks this for you.
+#
+# If you never intend to train on a GPU, swap the tensorflow line for
+# `tensorflow-cpu` -- same API, roughly a third of the download.
+
+fastapi>=0.115,<1.0
+uvicorn[standard]>=0.30
+pydantic>=2.7,<3.0
+supabase>=2.7,<3.0
+tensorflow>=2.16,<2.21
+numpy>=1.26,<3.0
+
+# tests only
+pytest>=8.0
+httpx>=0.27

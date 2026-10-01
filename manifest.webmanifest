@@ -1,0 +1,80 @@
+{
+  "name": "RICKTRIX — Kolkata Share-Auto Routes",
+  "short_name": "RICKTRIX",
+  "description": "Find shared auto-rickshaw routes, fares and stops across Kolkata. Works offline.",
+  "id": "/",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "browser"],
+  "orientation": "portrait-primary",
+  "background_color": "#F7F2E1",
+  "theme_color": "#FFC22E",
+  "lang": "en-IN",
+  "dir": "ltr",
+  "categories": ["travel", "navigation", "utilities"],
+  "icons": [
+    {
+      "src": "./assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./assets/icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "./assets/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "./assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./assets/icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "All routes",
+      "short_name": "Routes",
+      "url": "./all_routes.html",
+      "description": "Browse and filter every mapped route"
+    },
+    {
+      "name": "Saved routes",
+      "short_name": "Saved",
+      "url": "./saved_routes.html",
+      "description": "Routes you have bookmarked"
+    },
+    {
+      "name": "Live tracking",
+      "short_name": "Tracking",
+      "url": "./tracking.html",
+      "description": "Nearby share-autos"
+    },
+    {
+      "name": "Community",
+      "short_name": "Community",
+      "url": "./community.html",
+      "description": "Routes, tips and driver reviews"
+    }
+  ]
+}
